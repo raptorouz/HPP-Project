@@ -8,7 +8,7 @@ public class DataRow {
 	
 	private String firstName;
 	private String lastName;
-	private Date diagnosedTs;
+	private int diagnosedTs;
 	private int contaminatedBy;
 	
 	public DataRow(String line) {
@@ -18,7 +18,9 @@ public class DataRow {
 		this.firstName = tokens[1];
 		this.lastName = tokens[2];
 		
-	    this.diagnosedTs = new Date(1000 * Integer.parseInt(tokens[4]));
+	    //.diagnosedTs = new Date(1000 * Integer.parseInt(tokens[4]));
+	    Integer.parseInt(tokens[4]);
+
 	    this.contaminatedBy = Integer.parseInt(tokens[5]);
 	}
 	
@@ -40,10 +42,10 @@ public class DataRow {
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
 	}
-	public Date getDiagnosedTs() {
+	public int getDiagnosedTs() {
 		return diagnosedTs;
 	}
-	public void setDiagnosedTs(Date diagnosedTs) {
+	public void setDiagnosedTs(int diagnosedTs) {
 		this.diagnosedTs = diagnosedTs;
 	}
 	public int getContaminatedBy() {
