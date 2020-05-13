@@ -2,8 +2,7 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import Model.DataRow;
-import Model.Tree;
+import Model.*;
 
 public class TreeTest {
 	/**
@@ -22,7 +21,7 @@ public class TreeTest {
 		// Tests if the tree is created and that the root is the root we want ( with the
 		// good data );
 		assertNotNull(testTree);
-		assertTrue(testTree.getRoot().data.equals(dataRoot));
+		assertTrue(testTree.getRoot().getData().equals(dataRoot));
 	}
 
 	@Test
@@ -38,11 +37,11 @@ public class TreeTest {
 		Tree testTree = new Tree(dataRoot);
 		String dataToCreateChild = "1, \"Nicholas\", \"BAILEY\", 1965-11-20 00:00:00, 1575189760.380942, 0, \"kung-fu avec un collègue au super maché\"";
 		DataRow dataChild = new DataRow(dataToCreateChild);
-		Tree.Node<DataRow> rootNode = testTree.getRoot();
+		TreeNode<DataRow> rootNode = testTree.getRoot();
 		testTree.insert(dataChild, rootNode);
 		// Checks that the root now has a child and the data of its child is valid
-		assertFalse(testTree.getRoot().children.isEmpty());
-		assertTrue(testTree.getRoot().children.get(0).data.equals(dataChild));
+		assertFalse(testTree.getRoot().getChildren().isEmpty());
+		assertTrue(testTree.getRoot().getChildren().get(0).getData().equals(dataChild));
 
 		// Creation of a second child to verify multi insert in a node
 		dataToCreateChild = "7, \"Scott\", \"MORALES\", 2000-11-07 00:00:00, 1577678881.1428266, 0, \"sport avec ma fille au super maché\"";
@@ -50,8 +49,8 @@ public class TreeTest {
 		testTree.insert(dataChild, rootNode);
 		// Checks that the root now has 2 children, and that the data of the second is
 		// valid too
-		assertTrue(testTree.getRoot().children.size() == 2);
-		assertTrue(testTree.getRoot().children.get(1).data.equals(dataChild));
+		assertTrue(testTree.getRoot().getChildren().size() == 2);
+		assertTrue(testTree.getRoot().getChildren().get(1).getData().equals(dataChild));
 	}
 
 }
