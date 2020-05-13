@@ -18,23 +18,18 @@ public class Forest {
 	}
 	
 	public void insert(DataRow row) {
-		if(row.getContaminatedBy() == -1) { //Root id
-			this.trees.add(new Tree(row));
-		}
-		else {
-			Tree.Node<DataRow> nodeToInsertAfter = null;
-			for(Tree tree : trees) {
-				Tree.Node<DataRow> current = tree.getRoot();
-				nodeToInsertAfter = searchForNode(current, row.getContaminatedBy(), row.getDiagnosedTs());
-				if(nodeToInsertAfter != null) {
-					tree.insert(row, nodeToInsertAfter);
-				}
+		Tree.Node<DataRow> nodeToInsertAfter = null;
+		for(Tree tree : trees) {
+			Tree.Node<DataRow> current = tree.getRoot();
+			nodeToInsertAfter = searchForNode(current, row.getContaminatedBy(), row.getDiagnosedTs());
+			if(nodeToInsertAfter != null) {
+				tree.insert(row, nodeToInsertAfter);
 			}
 		}
 	}
 
 	
-	private Tree.Node<DataRow> searchForNode(Tree.Node<DataRow> currentNode, int parentId, int nodeToInsertDiagnosedTs ) {
+	private Tree.Node<DataRow> searchForNode(Tree.Node<DataRow> currentNode, int parentId, long nodeToInsertDiagnosedTs ) {
 		
 		Tree.Node<DataRow> resultNode = null;
 		if(currentNode.data.getId() == parentId) {
