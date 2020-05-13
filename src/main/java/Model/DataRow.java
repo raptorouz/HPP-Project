@@ -21,7 +21,13 @@ public class DataRow {
 	    //.diagnosedTs = new Date(1000 * Integer.parseInt(tokens[4]));
 	    Integer.parseInt(tokens[4]);
 
-	    this.contaminatedBy = Integer.parseInt(tokens[5]);
+	    try {
+	    	this.contaminatedBy = Integer.parseInt(tokens[5]);
+	    }
+	    catch (NumberFormatException ex) {
+	    	this.contaminatedBy = -1;
+	    }
+	    
 	}
 	
 	public int getId() {

@@ -18,12 +18,17 @@ public class Forest {
 	}
 	
 	public void insert(DataRow row) {
-		Tree.Node<DataRow> nodeToInsertAfter = null;
-		for(Tree tree : trees) {
-			Tree.Node<DataRow> current = tree.getRoot();
-			nodeToInsertAfter = searchForNode(current, row.getContaminatedBy(), row.getDiagnosedTs());
-			if(nodeToInsertAfter != null) {
-				tree.insert(row, nodeToInsertAfter);
+		if(row.getContaminatedBy() == -1) { //Root id
+			this.trees.add(new Tree(row));
+		}
+		else {
+			Tree.Node<DataRow> nodeToInsertAfter = null;
+			for(Tree tree : trees) {
+				Tree.Node<DataRow> current = tree.getRoot();
+				nodeToInsertAfter = searchForNode(current, row.getContaminatedBy(), row.getDiagnosedTs());
+				if(nodeToInsertAfter != null) {
+					tree.insert(row, nodeToInsertAfter);
+				}
 			}
 		}
 	}
