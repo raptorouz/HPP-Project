@@ -19,7 +19,7 @@ public class DataRow {
 		this.lastName = tokens[2];
 
 		// .diagnosedTs = new Date(1000 * Integer.parseInt(tokens[4]))
-		this.diagnosedTs = (long) Double.parseDouble(tokens[4]);
+	    this.diagnosedTs = (long) Double.parseDouble(tokens[4]);
 
 		try {
 			this.contaminatedBy = Integer.parseInt(tokens[5]);
@@ -52,11 +52,11 @@ public class DataRow {
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
 	}
-
+	public long getDiagnosedTs() {
 	public long getDiagnosedTs() {
 		return diagnosedTs;
 	}
-
+	public void setDiagnosedTs(long diagnosedTs) {
 	public void setDiagnosedTs(long diagnosedTs) {
 		this.diagnosedTs = diagnosedTs;
 	}
