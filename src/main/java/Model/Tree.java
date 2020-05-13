@@ -18,11 +18,11 @@ public class Tree {
         public ArrayList<Node<T>> children = null;
     }
     
-    long getRootDiagnosedTs() {
+    float getRootDiagnosedTs() {
     	return root.data.getDiagnosedTs();
     }
     
-    public void insert(DataRow data, Node<DataRow> parent) {
+    public Node<DataRow> insert(DataRow data, Node<DataRow> parent) {
     	Node<DataRow> node = new Node<DataRow>();
     	node.data = data;
     	
@@ -31,6 +31,7 @@ public class Tree {
     	}
     	
     	parent.children.add(node);
+    	return node;
     }
 
 	public Node<DataRow> getRoot() {
