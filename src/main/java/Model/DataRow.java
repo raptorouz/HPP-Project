@@ -53,10 +53,8 @@ public class DataRow {
 		this.lastName = lastName;
 	}
 	public long getDiagnosedTs() {
-	public long getDiagnosedTs() {
 		return diagnosedTs;
 	}
-	public void setDiagnosedTs(long diagnosedTs) {
 	public void setDiagnosedTs(long diagnosedTs) {
 		this.diagnosedTs = diagnosedTs;
 	}
