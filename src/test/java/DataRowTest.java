@@ -18,7 +18,6 @@ public class DataRowTest {
 		assertNotNull(data);
 		assertTrue(data.getId() == 135);
 		assertTrue(data.getContaminatedBy() == 82);
-		System.out.println(data.getDiagnosedTs());
 		assertTrue(data.getDiagnosedTs() == 1582765975);
 	}
 	/**

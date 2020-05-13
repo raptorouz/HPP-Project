@@ -74,10 +74,34 @@ public class Forest {
 	}
 
 	@Override
-	public boolean equals(Object obj) {
-		// TODO Auto-generated method stub
-		return super.equals(obj);
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((country == null) ? 0 : country.hashCode());
+		result = prime * result + ((trees == null) ? 0 : trees.hashCode());
+		return result;
 	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Forest other = (Forest) obj;
+		if (country != other.country)
+			return false;
+		if (trees == null) {
+			if (other.trees != null)
+				return false;
+		} else if (!trees.equals(other.trees))
+			return false;
+		return true;
+	}
+
+
 
 	
 	
