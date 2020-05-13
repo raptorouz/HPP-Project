@@ -18,7 +18,7 @@ public class Tree {
         public ArrayList<Node<T>> children = null;
     }
     
-    int getRootDiagnosedTs() {
+    long getRootDiagnosedTs() {
     	return root.data.getDiagnosedTs();
     }
     
