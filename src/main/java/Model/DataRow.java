@@ -19,7 +19,6 @@ public class DataRow {
 		this.lastName = tokens[2];
 
 		// .diagnosedTs = new Date(1000 * Integer.parseInt(tokens[4]))
-		double floatDiagnosed = Double.parseDouble(tokens[4]);
 		this.diagnosedTs = (long) Double.parseDouble(tokens[4]);
 
 		try {

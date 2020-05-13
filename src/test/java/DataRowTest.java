@@ -1,11 +1,6 @@
 import static org.junit.Assert.*;
 
-import java.util.ArrayList;
-
-import javax.swing.DebugGraphics;
-
 import org.junit.Test;
-import org.junit.runners.Parameterized.Parameters;
 
 import Model.DataRow;
 
