@@ -22,12 +22,12 @@ public class ForestTest {
 		DataRow fr_3 = new DataRow("9, Stephanie, MITCHELL, 1924-03-17 00:00:00, 1585699579.2617905, unknown, promenade avec mon fils à la campagne");
 		
 		Forest fr_forest_test = new Forest(Forest.Country.FRANCE);
-		Tree.Node<DataRow> fr_node_1 = fr_forest_test.insert(fr_1);
-		Tree.Node<DataRow> fr_node_2 = fr_forest_test.insert(fr_2);
-		Tree.Node<DataRow> fr_node_3 = fr_forest_test.insert(fr_3);
+		fr_forest_test.insert(fr_1);
+		fr_forest_test.insert(fr_2);
+		fr_forest_test.insert(fr_3);
 		
 		Tree fr_tree_1 = new Tree(fr_1);
-		fr_tree_1.insert(fr_2, fr_node_1);
+		fr_tree_1.insert(fr_2, fr_tree_1.getRoot());
 		Tree fr_tree_2 = new Tree(fr_3);
 		
 		ArrayList<Tree> fr_forest = new ArrayList<Tree>();
