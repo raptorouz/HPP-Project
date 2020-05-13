@@ -54,7 +54,7 @@ public class Tree {
         
     }
     
-    float getRootDiagnosedTs() {
+    long getRootDiagnosedTs() {
     	return root.data.getDiagnosedTs();
     }
     
