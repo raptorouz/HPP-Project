@@ -1,12 +1,14 @@
 package Model;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Objects;
 
 public class Tree {
 	
     private TreeNode<DataRow> root;
     private Forest parentForest;
+    private HashSet<TreeNode<DataRow>> leaves;
 
     public Tree(DataRow rootData, Forest parentForest) {
         root = new TreeNode<DataRow>();
@@ -15,6 +17,8 @@ public class Tree {
         root.setParent(null);
      
         this.parentForest = parentForest;
+        this.leaves = new HashSet<TreeNode<DataRow>>();
+        this.leaves.add(root);
     }
 
     
@@ -23,21 +27,39 @@ public class Tree {
     }
     
     public TreeNode<DataRow> insert(DataRow data, TreeNode<DataRow> parent) {
+    	//Create Node
     	TreeNode<DataRow> node = new TreeNode<DataRow>();
     	node.setData(data);
     	node.setParent(parent);
     	
+    	//Lazy loading for children list
     	if(parent.getChildren() == null) {
     		parent.setChildren(new ArrayList<TreeNode<DataRow>>());
     	}
     	
+    	//Update parent
     	parent.getChildren().add(node);
-    	int totalScore = updatePreviousScoresAndComputeTotalChainScore(node, node.getData().getDiagnosedTs());
     	
+    	//Update leaves
+    	this.leaves.remove(node.getParent());
+    	this.leaves.add(node);
+    	
+    	//Update all leaves
     	if(this.parentForest != null) {
-        	this.parentForest.updateTop3IfNeeded(node, totalScore);
+        	this.parentForest.updateAllScores(node.getData().getDiagnosedTs());
     	}
+    	
     	return node;
+    }
+    
+    public void updateFromAllLeaves(long lastestDiagnosedTs) {
+    	for(TreeNode<DataRow> leaf : leaves) {
+    		int chainScore = updatePreviousScoresAndComputeTotalChainScore(leaf, lastestDiagnosedTs);
+    		//Update top3
+        	if(this.parentForest != null) {
+            	this.parentForest.updateTop3IfNeeded(leaf, chainScore);
+        	}
+    	}
     }
     
     private int updatePreviousScoresAndComputeTotalChainScore(TreeNode<DataRow> currentNode, long lastestDiagnosedTs) {
@@ -51,6 +73,15 @@ public class Tree {
     	else {
     		return score;
     	}
+    }
+    
+    public TreeNode<DataRow> searchForNode(int parentId) {
+		for(TreeNode<DataRow> leaf : leaves) {
+			if(leaf.getData().getId() == parentId) {
+    			return leaf;
+    		}
+		}
+    	return null;
     }
 
 	public TreeNode<DataRow> getRoot() {
