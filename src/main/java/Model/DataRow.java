@@ -1,6 +1,6 @@
 package Model;
 
-import java.util.Date;
+import java.util.Objects;
 
 public class DataRow {
 
@@ -69,44 +69,22 @@ public class DataRow {
 
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + contaminatedBy;
-		result = prime * result + (int) (diagnosedTs ^ (diagnosedTs >>> 32));
-		result = prime * result + ((firstName == null) ? 0 : firstName.hashCode());
-		result = prime * result + id;
-		result = prime * result + ((lastName == null) ? 0 : lastName.hashCode());
-		return result;
+		return Objects.hash(contaminatedBy, diagnosedTs, firstName, id, lastName);
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (!(obj instanceof DataRow)) {
 			return false;
-		if (getClass() != obj.getClass())
-			return false;
+		}
 		DataRow other = (DataRow) obj;
-		if (contaminatedBy != other.contaminatedBy)
-			return false;
-		if (diagnosedTs != other.diagnosedTs)
-			return false;
-		if (firstName == null) {
-			if (other.firstName != null)
-				return false;
-		} else if (!firstName.equals(other.firstName))
-			return false;
-		if (id != other.id)
-			return false;
-		if (lastName == null) {
-			if (other.lastName != null)
-				return false;
-		} else if (!lastName.equals(other.lastName))
-			return false;
-		return true;
+		return contaminatedBy == other.contaminatedBy && diagnosedTs == other.diagnosedTs
+				&& Objects.equals(firstName, other.firstName) && id == other.id
+				&& Objects.equals(lastName, other.lastName);
 	}
-
 
 }
 //SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-DD HH-mm-ss");	
