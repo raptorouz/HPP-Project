@@ -18,11 +18,11 @@ public class TreeNode<T> {
     }
     
     public TreeNode<T> getRootWithScoreNonNull() {
-    	if(this.parent.score == 0) {
+    	if(this.parent == null || this.parent.score == 0 ) {
     		return this;
     	}
     	else {
-    		 return this.parent.getRootWithScoreNonNull();
+   		 	return this.parent.getRootWithScoreNonNull();
     	}
     }
     
@@ -41,10 +41,12 @@ public class TreeNode<T> {
 	public TreeNode<T> getParent() {
 		return parent;
 	}
+	
 	@Override
 	public int hashCode() {
-		return Objects.hash(children, data, parent, score);
+		return Objects.hash(data);
 	}
+	
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) {
@@ -54,7 +56,7 @@ public class TreeNode<T> {
 			return false;
 		}
 		TreeNode<T> other = (TreeNode<T>) obj;
-		return Objects.equals(data, other.data) && score == other.score;
+		return Objects.equals(data, other.data);
 	}
 	public void setParent(TreeNode<T> parent) {
 		this.parent = parent;
