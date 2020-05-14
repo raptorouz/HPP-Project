@@ -1,6 +1,9 @@
 package Model;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.Objects;
 
 public class Forest {
 	private ArrayList<Tree> trees;
@@ -12,9 +15,29 @@ public class Forest {
 	};
 	private Country country;
 	
+	private ArrayList<TreeNode<DataRow>> top3; // 0 is TOP1, etc...
+	private int top3Scores[];
+	
+	@Override
+	public String toString() {
+		String str = country + " ";
+		for(int i = 0; i < 3; ++i) {
+			str += "[";
+			int idRoot = top3.get(i).getRootWithScoreNonNull().getData().getId();
+			int scoreTotal = top3Scores[i];
+			str += idRoot + ", " + scoreTotal + "]" + (i < 2 ? "; " : "");
+		}
+		
+		return str;
+	}
+
 	public Forest(Country country) {
 		trees = new ArrayList<Tree>();
 		this.country = country;
+		top3 = new ArrayList<TreeNode<DataRow>>(3);
+		for(int i = 0; i < 3; ++i)
+			top3.add(null);
+		top3Scores = new int[3];
 	}
 	
 	public Forest(Country country, ArrayList<Tree> forest) { 
@@ -23,19 +46,59 @@ public class Forest {
 		this.country = country;
 	}
 	
-	public Tree.Node<DataRow> insert(DataRow row) {
+	public void updateTop3IfNeeded(TreeNode<DataRow> lastNode, int newScore) {	
+		if(newScore > top3Scores[2]) {
+		      top3Scores[2] = newScore;
+		      top3.set(2, lastNode);
+		}
+		if(newScore > top3Scores[1]){
+		  top3Scores[2] = top3Scores[1];
+		  top3Scores[1] = newScore;
+		  
+		  top3.set(2, top3.get(1));
+		  top3.set(1, lastNode);
+		}
+		if(newScore > top3Scores[0]) {
+		  top3Scores[1] = top3Scores[0];
+		  top3Scores[0] = newScore;
+		  
+		  top3.set(1, top3.get(0));
+		  top3.set(0, lastNode);
+		}
+	}
+	
+	public void updateAllScores(long lastestDiagnosedTs) {
+		for(Tree tree : trees) {
+			tree.updateFromAllLeaves(lastestDiagnosedTs);
+		}
+	}
+	
+	public TreeNode<DataRow> insert(DataRow row) {
 		
-		Tree.Node<DataRow> insertedNode = null;
+		TreeNode<DataRow> insertedNode = null;
+		
+		//Reset top3
+		top3.clear();
+		for(int i  = 0; i < 3; ++i) {
+			top3.add(null);
+			top3Scores[i] = -1;
+		}
+		
 		if(row.getContaminatedBy() == -1) { //Root id
-			Tree tree = new Tree(row);
+			Tree tree = new Tree(row, this);
 			this.trees.add(tree);
 			insertedNode = tree.getRoot();
+			
+			//Update all scores
+            this.updateAllScores(insertedNode.getData().getDiagnosedTs());
 		}
 		else {
-			Tree.Node<DataRow> nodeToInsertAfter = null;
+			TreeNode<DataRow> nodeToInsertAfter = null;
 			for(Tree tree : trees) {
-				Tree.Node<DataRow> current = tree.getRoot();
+				TreeNode<DataRow> current = tree.getRoot();
 				nodeToInsertAfter = searchForNode(current, row.getContaminatedBy(), row.getDiagnosedTs());
+				//nodeToInsertAfter = searchForNode(row.getContaminatedBy());
+
 				if(nodeToInsertAfter != null) {
 					insertedNode = tree.insert(row, nodeToInsertAfter);
 				}
@@ -45,20 +108,20 @@ public class Forest {
 	}
 
 	
-	private Tree.Node<DataRow> searchForNode(Tree.Node<DataRow> currentNode, int parentId, long nodeToInsertDiagnosedTs ) {
+	private TreeNode<DataRow> searchForNode(TreeNode<DataRow> currentNode, int parentId, long nodeToInsertDiagnosedTs ) {
 		
-		Tree.Node<DataRow> resultNode = null;
-		if(currentNode.data.getId() == parentId) {
+		TreeNode<DataRow> resultNode = null;
+		if(currentNode.getData().getId() == parentId) {
 			resultNode = currentNode;
 		}
 		else {
-			if(currentNode.children != null) {
-				for(Tree.Node<DataRow> child : currentNode.children) {
-					if(child.data.getDiagnosedTs() > nodeToInsertDiagnosedTs) {
+			if(currentNode.getChildren() != null) {
+				for(TreeNode<DataRow> child : currentNode.getChildren()) {
+					if(child.getData().getDiagnosedTs() > nodeToInsertDiagnosedTs) {
 						continue;
 					}
 					
-					Tree.Node<DataRow> node = searchForNode(child, parentId, nodeToInsertDiagnosedTs);
+					TreeNode<DataRow> node = searchForNode(child, parentId, nodeToInsertDiagnosedTs);
 					if(node != null) {
 						resultNode = node;
 						break;
@@ -72,37 +135,33 @@ public class Forest {
 		}
 		return resultNode;
 	}
+	
+//	private TreeNode<DataRow> searchForNode(int parentId) {
+//		TreeNode<DataRow> found = null;
+//		Iterator<Tree> iter = trees.iterator();
+//		
+//		while(iter.hasNext() && found == null) {
+//			found = iter.next().searchForNode(parentId);
+//		}
+//		
+//		return found;
+//	}
 
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((country == null) ? 0 : country.hashCode());
-		result = prime * result + ((trees == null) ? 0 : trees.hashCode());
-		return result;
+		return Objects.hash(country, trees);
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (!(obj instanceof Forest)) {
 			return false;
-		if (getClass() != obj.getClass())
-			return false;
+		}
 		Forest other = (Forest) obj;
-		if (country != other.country)
-			return false;
-		if (trees == null) {
-			if (other.trees != null)
-				return false;
-		} else if (!trees.equals(other.trees))
-			return false;
-		return true;
+		return country == other.country && Objects.equals(trees, other.trees);
 	}
 
-
-
-	
-	
 }
