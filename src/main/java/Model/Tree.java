@@ -6,12 +6,15 @@ import java.util.Objects;
 public class Tree {
 	
     private TreeNode<DataRow> root;
+    private Forest parentForest;
 
-    public Tree(DataRow rootData) {
+    public Tree(DataRow rootData, Forest parentForest) {
         root = new TreeNode<DataRow>();
         root.setData(rootData);
         root.setChildren(new ArrayList<TreeNode<DataRow>>());
         root.setParent(null);
+     
+        this.parentForest = parentForest;
     }
 
     
@@ -29,18 +32,24 @@ public class Tree {
     	}
     	
     	parent.getChildren().add(node);
+    	int totalScore = updatePreviousScoresAndComputeTotalChainScore(node, node.getData().getDiagnosedTs());
+    	
+    	if(this.parentForest != null) {
+        	this.parentForest.updateTop3IfNeeded(node, totalScore);
+    	}
     	return node;
     }
     
-    private void updatePreviousScores(TreeNode<DataRow> currentNode, long lastestDiagnosedTs) {
+    private int updatePreviousScoresAndComputeTotalChainScore(TreeNode<DataRow> currentNode, long lastestDiagnosedTs) {
     	int score = Utils.Utilities.getScore(lastestDiagnosedTs, 
 				currentNode.getData().getDiagnosedTs());
-		if(score < currentNode.getScore()) {
-			currentNode.setScore(score);
-		}
+		currentNode.setScore(score);
 		
     	if(currentNode.getParent() != null) {
-    		updatePreviousScores(currentNode.getParent(), lastestDiagnosedTs);
+    		return score + updatePreviousScoresAndComputeTotalChainScore(currentNode.getParent(), lastestDiagnosedTs);
+    	}
+    	else {
+    		return score;
     	}
     }
 

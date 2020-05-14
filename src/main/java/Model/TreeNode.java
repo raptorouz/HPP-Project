@@ -17,6 +17,15 @@ public class TreeNode<T> {
     	score = 10;
     }
     
+    public TreeNode<T> getRootWithScoreNonNull() {
+    	if(this.parent.score == 0) {
+    		return this;
+    	}
+    	else {
+    		 return this.parent.getRootWithScoreNonNull();
+    	}
+    }
+    
 	public int getScore() {
 		return score;
 	}
