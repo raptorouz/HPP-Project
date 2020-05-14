@@ -14,7 +14,7 @@ public class App {
 
 	public static void main(String[] args) throws IOException {
 		Country countries[] = {Country.FRANCE, Country.ITALY, Country.SPAIN};
-		String path = "../data/20/";
+		String path = "../data/5000/";
 		
 		for(Country country : countries) {
 			Forest forest = new Forest(country);
@@ -27,6 +27,8 @@ public class App {
 				DataRow row = new DataRow(line);
 				forest.insert(row);
 			});
+			
+			System.out.println(forest);
 			
 		}
 
