@@ -2,6 +2,7 @@ package Model;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.Objects;
 
 public class Forest {
@@ -66,19 +67,38 @@ public class Forest {
 		}
 	}
 	
+	public void updateAllScores(long lastestDiagnosedTs) {
+		for(Tree tree : trees) {
+			tree.updateFromAllLeaves(lastestDiagnosedTs);
+		}
+	}
+	
 	public TreeNode<DataRow> insert(DataRow row) {
 		
 		TreeNode<DataRow> insertedNode = null;
+		
+		//Reset top3
+		top3.clear();
+		for(int i  = 0; i < 3; ++i) {
+			top3.add(null);
+			top3Scores[i] = -1;
+		}
+		
 		if(row.getContaminatedBy() == -1) { //Root id
 			Tree tree = new Tree(row, this);
 			this.trees.add(tree);
 			insertedNode = tree.getRoot();
+			
+			//Update all scores
+            this.updateAllScores(insertedNode.getData().getDiagnosedTs());
 		}
 		else {
 			TreeNode<DataRow> nodeToInsertAfter = null;
 			for(Tree tree : trees) {
 				TreeNode<DataRow> current = tree.getRoot();
 				nodeToInsertAfter = searchForNode(current, row.getContaminatedBy(), row.getDiagnosedTs());
+				//nodeToInsertAfter = searchForNode(row.getContaminatedBy());
+
 				if(nodeToInsertAfter != null) {
 					insertedNode = tree.insert(row, nodeToInsertAfter);
 				}
@@ -115,6 +135,17 @@ public class Forest {
 		}
 		return resultNode;
 	}
+	
+//	private TreeNode<DataRow> searchForNode(int parentId) {
+//		TreeNode<DataRow> found = null;
+//		Iterator<Tree> iter = trees.iterator();
+//		
+//		while(iter.hasNext() && found == null) {
+//			found = iter.next().searchForNode(parentId);
+//		}
+//		
+//		return found;
+//	}
 
 	@Override
 	public int hashCode() {
