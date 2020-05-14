@@ -17,7 +17,7 @@ public class TreeTest {
 		// Creation of the root DataRow
 		String dataToCreateRoot = "0, \"Patricia\", \"PEREZ\", 1956-01-11 00:00:00, 1573945200.0, unknown, \"course à pieds avec le chien à la campagne\"";
 		DataRow dataRoot = new DataRow(dataToCreateRoot);
-		testTree = new Tree(dataRoot);
+		testTree = new Tree(dataRoot, null);
 		// Tests if the tree is created and that the root is the root we want ( with the
 		// good data );
 		assertNotNull(testTree);
@@ -34,7 +34,7 @@ public class TreeTest {
 		 */
 		String dataToCreateRoot = "0, \"Patricia\", \"PEREZ\", 1956-01-11 00:00:00, 1573945200.0, unknown, \"course à pieds avec le chien à la campagne\"";
 		DataRow dataRoot = new DataRow(dataToCreateRoot);
-		Tree testTree = new Tree(dataRoot);
+		Tree testTree = new Tree(dataRoot, null);
 		String dataToCreateChild = "1, \"Nicholas\", \"BAILEY\", 1965-11-20 00:00:00, 1575189760.380942, 0, \"kung-fu avec un collègue au super maché\"";
 		DataRow dataChild = new DataRow(dataToCreateChild);
 		TreeNode<DataRow> rootNode = testTree.getRoot();
