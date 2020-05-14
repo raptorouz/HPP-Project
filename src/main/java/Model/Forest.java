@@ -1,6 +1,7 @@
 package Model;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Objects;
 
 public class Forest {
@@ -13,9 +14,29 @@ public class Forest {
 	};
 	private Country country;
 	
+	private ArrayList<TreeNode<DataRow>> top3; // 0 is TOP1, etc...
+	private int top3Scores[];
+	
+	@Override
+	public String toString() {
+		String str = country + " ";
+		for(int i = 0; i < 3; ++i) {
+			str += "[";
+			int idRoot = top3.get(i).getRootWithScoreNonNull().getData().getId();
+			int scoreTotal = top3Scores[i];
+			str += idRoot + ", " + scoreTotal + "]" + (i < 2 ? "; " : "");
+		}
+		
+		return str;
+	}
+
 	public Forest(Country country) {
 		trees = new ArrayList<Tree>();
 		this.country = country;
+		top3 = new ArrayList<TreeNode<DataRow>>(3);
+		for(int i = 0; i < 3; ++i)
+			top3.add(null);
+		top3Scores = new int[3];
 	}
 	
 	public Forest(Country country, ArrayList<Tree> forest) { 
@@ -24,11 +45,32 @@ public class Forest {
 		this.country = country;
 	}
 	
+	public void updateTop3IfNeeded(TreeNode<DataRow> lastNode, int newScore) {	
+		if(newScore > top3Scores[2]) {
+		      top3Scores[2] = newScore;
+		      top3.set(2, lastNode);
+		}
+		if(newScore > top3Scores[1]){
+		  top3Scores[2] = top3Scores[1];
+		  top3Scores[1] = newScore;
+		  
+		  top3.set(2, top3.get(1));
+		  top3.set(1, lastNode);
+		}
+		if(newScore > top3Scores[0]) {
+		  top3Scores[1] = top3Scores[0];
+		  top3Scores[0] = newScore;
+		  
+		  top3.set(1, top3.get(0));
+		  top3.set(0, lastNode);
+		}
+	}
+	
 	public TreeNode<DataRow> insert(DataRow row) {
 		
 		TreeNode<DataRow> insertedNode = null;
 		if(row.getContaminatedBy() == -1) { //Root id
-			Tree tree = new Tree(row);
+			Tree tree = new Tree(row, this);
 			this.trees.add(tree);
 			insertedNode = tree.getRoot();
 		}
