@@ -1,5 +1,9 @@
 package Utils;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class Utilities {
 	
 	private static final long HOURS_168 = 168 * 3600;
@@ -17,6 +21,12 @@ public class Utilities {
 		}
 		
 		return score;
+	}
+	
+	public static String timestampToString(long timestamp) {
+		DateFormat dateFormat = new SimpleDateFormat("d MMM y hh:mm:ss");  
+		Date date = new Date((long) timestamp * 1000);
+		return dateFormat.format(date) ;
 	}
 
 }

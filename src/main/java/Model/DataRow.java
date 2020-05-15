@@ -63,6 +63,16 @@ public class DataRow {
 		return contaminatedBy;
 	}
 
+
+
+	@Override
+	public String toString() {
+		return "[id=" + id + ", " + (firstName != null ? "firstName=" + firstName + ", " : "")
+				+ (lastName != null ? "lastName=" + lastName + ", " : "") + "diagnosedTs=" + 
+				Utils.Utilities.timestampToString(diagnosedTs)
+				+ ", contaminatedBy=" + contaminatedBy + "]";
+	}
+
 	public void setContaminatedBy(int contaminatedBy) {
 		this.contaminatedBy = contaminatedBy;
 	}
