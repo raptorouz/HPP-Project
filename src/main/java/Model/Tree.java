@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Objects;
 
+import javax.xml.crypto.Data;
+
 public class Tree {
 	
     private TreeNode<DataRow> root;
@@ -82,6 +84,19 @@ public class Tree {
     		}
 		}
     	return null;
+    }
+    
+    public void displayFromAllLeaves() {
+    	int i = 0;
+    	
+    	for(TreeNode<DataRow> leaf : leaves) {
+    		System.out.println("Chain n°" + (++i));
+    		leaf.applyFunctionToAllNodesFromThisOne( 
+    				(TreeNode<DataRow> node) -> {
+    					System.out.println(node.toString());
+    				});
+    		System.out.println();
+    	}
     }
 
 	public TreeNode<DataRow> getRoot() {
