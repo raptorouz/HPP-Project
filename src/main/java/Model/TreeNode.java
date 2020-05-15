@@ -3,12 +3,16 @@ package Model;
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class TreeNode<T> {
+public class TreeNode<T extends Object> {
 	
     private T data;
     private TreeNode<T> parent;
     private ArrayList<TreeNode<T>> children;
     private int score;
+    
+    public interface VoidFunction<T extends Object> {
+    	public void applyTo(TreeNode<T> node);
+    }
     
     public TreeNode() {
     	data = null;
@@ -17,7 +21,12 @@ public class TreeNode<T> {
     	score = 10;
     }
     
-    public TreeNode<T> getRootWithScoreNonNull() {
+    @Override
+	public String toString() {
+		return data.toString() + " Score: " + this.score;
+	}
+
+	public TreeNode<T> getRootWithScoreNonNull() {
     	if(this.parent == null || this.parent.score == 0 ) {
     		return this;
     	}
@@ -25,6 +34,13 @@ public class TreeNode<T> {
    		 	return this.parent.getRootWithScoreNonNull();
     	}
     }
+	
+	public void applyFunctionToAllNodesFromThisOne(VoidFunction<T> func) {
+		func.applyTo(this);
+		if(this.parent != null) {
+   		 	this.parent.applyFunctionToAllNodesFromThisOne(func);
+		}
+	}
     
 	public int getScore() {
 		return score;
