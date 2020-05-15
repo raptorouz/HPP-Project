@@ -46,6 +46,15 @@ public class Forest {
 		this.country = country;
 	}
 	
+	public void displayAllChains() {
+		int i = 0;
+		for(Tree tree : trees) {
+			System.out.println("Arbre n°" + (++i) + 
+					(i == 1 ? " ###################" : ""));
+			tree.displayFromAllLeaves();
+		}
+	}
+	
 	public void updateTop3IfNeeded(TreeNode<DataRow> lastNode, int newScore) {	
 		if(newScore > top3Scores[2]) {
 		      top3Scores[2] = newScore;
@@ -97,7 +106,6 @@ public class Forest {
 			for(Tree tree : trees) {
 				TreeNode<DataRow> current = tree.getRoot();
 				nodeToInsertAfter = searchForNode(current, row.getContaminatedBy(), row.getDiagnosedTs());
-				//nodeToInsertAfter = searchForNode(row.getContaminatedBy());
 
 				if(nodeToInsertAfter != null) {
 					insertedNode = tree.insert(row, nodeToInsertAfter);
@@ -136,16 +144,6 @@ public class Forest {
 		return resultNode;
 	}
 	
-//	private TreeNode<DataRow> searchForNode(int parentId) {
-//		TreeNode<DataRow> found = null;
-//		Iterator<Tree> iter = trees.iterator();
-//		
-//		while(iter.hasNext() && found == null) {
-//			found = iter.next().searchForNode(parentId);
-//		}
-//		
-//		return found;
-//	}
 
 	@Override
 	public int hashCode() {
