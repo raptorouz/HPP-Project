@@ -1,12 +1,15 @@
 package Model;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Objects;
 
-public class Forest {
+import Interface.Top3UpdateAvailableListener;
+import Interface.Top9UpdateAvailableListener;
+
+public class Forest implements Top3UpdateAvailableListener {
 	private ArrayList<Tree> trees;
+	private Top3 top3;
 	
 	public enum Country {
 		FRANCE,
@@ -14,36 +17,22 @@ public class Forest {
 		SPAIN
 	};
 	private Country country;
-	
-	private ArrayList<TreeNode<DataRow>> top3; // 0 is TOP1, etc...
-	private int top3Scores[];
-	
-	@Override
-	public String toString() {
-		String str = country + " ";
-		for(int i = 0; i < 3; ++i) {
-			str += "[";
-			int idRoot = top3.get(i).getRootWithScoreNonNull().getData().getId();
-			int scoreTotal = top3Scores[i];
-			str += idRoot + ", " + scoreTotal + "]" + (i < 2 ? "; " : "");
-		}
-		
-		return str;
-	}
+	private Top9UpdateAvailableListener updateListener;
 
 	public Forest(Country country) {
 		trees = new ArrayList<Tree>();
 		this.country = country;
-		top3 = new ArrayList<TreeNode<DataRow>>(3);
-		for(int i = 0; i < 3; ++i)
-			top3.add(null);
-		top3Scores = new int[3];
+		top3 = new Top3();
 	}
 	
 	public Forest(Country country, ArrayList<Tree> forest) { 
 		
 		trees = forest;
 		this.country = country;
+	}
+	
+	public void setUpdateAvailableListener(Top9UpdateAvailableListener listener) {
+		this.updateListener = listener;
 	}
 	
 	public void displayAllChains() {
@@ -56,24 +45,7 @@ public class Forest {
 	}
 	
 	public void updateTop3IfNeeded(TreeNode<DataRow> lastNode, int newScore) {	
-		if(newScore > top3Scores[2]) {
-		      top3Scores[2] = newScore;
-		      top3.set(2, lastNode);
-		}
-		if(newScore > top3Scores[1]){
-		  top3Scores[2] = top3Scores[1];
-		  top3Scores[1] = newScore;
-		  
-		  top3.set(2, top3.get(1));
-		  top3.set(1, lastNode);
-		}
-		if(newScore > top3Scores[0]) {
-		  top3Scores[1] = top3Scores[0];
-		  top3Scores[0] = newScore;
-		  
-		  top3.set(1, top3.get(0));
-		  top3.set(0, lastNode);
-		}
+		
 	}
 	
 	public void updateAllScores(long lastestDiagnosedTs) {
@@ -86,35 +58,59 @@ public class Forest {
 		
 		TreeNode<DataRow> insertedNode = null;
 		
-		//Reset top3
-		top3.clear();
-		for(int i  = 0; i < 3; ++i) {
-			top3.add(null);
-			top3Scores[i] = -1;
-		}
-		
 		if(row.getContaminatedBy() == -1) { //Root id
-			Tree tree = new Tree(row, this);
-			this.trees.add(tree);
-			insertedNode = tree.getRoot();
-			
-			//Update all scores
-            this.updateAllScores(insertedNode.getData().getDiagnosedTs());
+			insertedNode = insertNewTree(row);
 		}
 		else {
 			TreeNode<DataRow> nodeToInsertAfter = null;
-			for(Tree tree : trees) {
-				TreeNode<DataRow> current = tree.getRoot();
-				nodeToInsertAfter = searchForNode(current, row.getContaminatedBy(), row.getDiagnosedTs());
-
-				if(nodeToInsertAfter != null) {
-					insertedNode = tree.insert(row, nodeToInsertAfter);
+			Iterator<Tree> iter = trees.iterator();
+			Tree currentTree = null;
+			while(iter.hasNext() && nodeToInsertAfter == null) {
+				currentTree = iter.next();
+				nodeToInsertAfter = searchForNode(currentTree.getRoot(), row.getContaminatedBy(), row.getDiagnosedTs());
+			}
+			
+			if(nodeToInsertAfter == null) { //New tree
+				insertedNode = insertNewTree(row);
+			}
+			else {
+				int updatedScoreOfParentNode = Utils.Utilities.getScore(row.getDiagnosedTs(), 
+						nodeToInsertAfter.getData().getDiagnosedTs());
+				if(updatedScoreOfParentNode > 0) {
+					insertedNode = currentTree.insert(row, nodeToInsertAfter);
+				}
+				else {
+					insertedNode = insertNewTree(row);
 				}
 			}
+			
+			
 		}
+		
+		//Update all leaves
+    	this.updateAllScores(insertedNode.getData().getDiagnosedTs());
+    	
+    	//Free empty trees
+    	freeEmptyTrees();
+		
 		return insertedNode;
 	}
+	
+	public Country getCountry() {
+		return country;
+	}
 
+	private void freeEmptyTrees() {
+		trees.removeIf((Tree tree) -> tree.areAllNodesZero());
+	}
+	
+	private TreeNode<DataRow> insertNewTree(DataRow row) {
+		Tree tree = new Tree(row);
+		tree.setUpdateAvailableListener(this);
+		this.trees.add(tree);
+		TreeNode<DataRow> insertedNode = tree.getRoot();
+        return insertedNode;
+	}
 	
 	private TreeNode<DataRow> searchForNode(TreeNode<DataRow> currentNode, int parentId, long nodeToInsertDiagnosedTs ) {
 		
@@ -160,6 +156,24 @@ public class Forest {
 		}
 		Forest other = (Forest) obj;
 		return country == other.country && Objects.equals(trees, other.trees);
+	}
+
+	@Override
+	public void updateAvailable(TreeNode<DataRow> lastNode, int newScore) {
+		
+//		//Forward to parent
+//		if(this.updateListener != null) {
+//			this.updateListener.updateAvailable(lastNode, newScore, this.country);
+//		}
+		
+		//SHould return a boolean to check if there was effectively an update
+		top3.update(lastNode, newScore, this.country);
+		
+		//Update Global Top3
+		if(updateListener != null) {
+			updateListener.updateAvailable(top3);
+		}
+		
 	}
 
 }
