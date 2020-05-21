@@ -26,9 +26,9 @@ public class ForestTest {
 		fr_forest_test.insert(fr_2);
 		fr_forest_test.insert(fr_3);
 		
-		Tree fr_tree_1 = new Tree(fr_1, null);
+		Tree fr_tree_1 = new Tree(fr_1);
 		fr_tree_1.insert(fr_2, fr_tree_1.getRoot());
-		Tree fr_tree_2 = new Tree(fr_3, null);
+		Tree fr_tree_2 = new Tree(fr_3);
 		
 		ArrayList<Tree> fr_forest = new ArrayList<Tree>();
 		fr_forest.add(fr_tree_1);

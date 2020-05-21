@@ -28,5 +28,11 @@ public class Utilities {
 		Date date = new Date((long) timestamp * 1000);
 		return dateFormat.format(date) ;
 	}
+	
+	public static final <T> void swap (T[] a, int i, int j) {
+		  T t = a[i];
+		  a[i] = a[j];
+		  a[j] = t;
+	}
 
 }

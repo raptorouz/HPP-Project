@@ -2,25 +2,32 @@ package Model;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Objects;
 
 import javax.xml.crypto.Data;
 
+import Interface.Top3UpdateAvailableListener;
+
 public class Tree {
 	
     private TreeNode<DataRow> root;
-    private Forest parentForest;
     private HashSet<TreeNode<DataRow>> leaves;
+    
+    private Top3UpdateAvailableListener updateListener = null;
 
-    public Tree(DataRow rootData, Forest parentForest) {
+    public Tree(DataRow rootData) {
         root = new TreeNode<DataRow>();
         root.setData(rootData);
         root.setChildren(new ArrayList<TreeNode<DataRow>>());
         root.setParent(null);
-     
-        this.parentForest = parentForest;
+    
         this.leaves = new HashSet<TreeNode<DataRow>>();
         this.leaves.add(root);
+    }
+    
+    public void setUpdateAvailableListener(Top3UpdateAvailableListener listener) {
+    	this.updateListener = listener;
     }
 
     
@@ -46,21 +53,25 @@ public class Tree {
     	this.leaves.remove(node.getParent());
     	this.leaves.add(node);
     	
-    	//Update all leaves
-    	if(this.parentForest != null) {
-        	this.parentForest.updateAllScores(node.getData().getDiagnosedTs());
-    	}
-    	
     	return node;
+    }
+    
+    public boolean areAllNodesZero() {
+    	boolean res = true;
+    	Iterator<TreeNode<DataRow>> iter = leaves.iterator();
+    	while(iter.hasNext() && res == true) {
+    		res = res && iter.next().getScore() == 0;
+    	}
+    	return res;
     }
     
     public void updateFromAllLeaves(long lastestDiagnosedTs) {
     	for(TreeNode<DataRow> leaf : leaves) {
     		int chainScore = updatePreviousScoresAndComputeTotalChainScore(leaf, lastestDiagnosedTs);
-    		//Update top3
-        	if(this.parentForest != null) {
-            	this.parentForest.updateTop3IfNeeded(leaf, chainScore);
-        	}
+    		
+    		if(this.updateListener != null) {
+    			this.updateListener.updateAvailable(leaf, chainScore);
+    		}
     	}
     }
     
@@ -69,7 +80,7 @@ public class Tree {
 				currentNode.getData().getDiagnosedTs());
 		currentNode.setScore(score);
 		
-    	if(currentNode.getParent() != null) {
+    	if(currentNode.getParent() != null && score > 0) {
     		return score + updatePreviousScoresAndComputeTotalChainScore(currentNode.getParent(), lastestDiagnosedTs);
     	}
     	else {
