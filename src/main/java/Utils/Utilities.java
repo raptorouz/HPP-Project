@@ -29,6 +29,10 @@ public class Utilities {
 		return dateFormat.format(date) ;
 	}
 	
+	public static String distanceToLatestDate(long currentRowTs, long latestTs) {
+		return  String.format("%.2f", (latestTs - currentRowTs) / 3600.0);
+	}
+	
 	public static final <T> void swap (T[] a, int i, int j) {
 		  T t = a[i];
 		  a[i] = a[j];
