@@ -7,12 +7,6 @@ import org.junit.Test;
 import Model.*;
 
 public class ForestTest {
-
-//	@Test
-//	public void test() {
-//		fail("Not yet implemented");
-//
-//	}
 	
 	@Test
 	public void forest_test()

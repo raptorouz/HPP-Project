@@ -1,6 +1,7 @@
 package Model;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 
@@ -12,12 +13,6 @@ public class Top9 {
 	
 	public Top9() {
 		items = new TopItem[3][3];
-		for(int i = 0; i < 3; ++i) {
-			for(int j = 0; j < 3; ++j) {
-				items[i][j] =  new TopItem(INVALID_ID, Country.FRANCE, -1, INVALID_ID, 
-						new Date().getTime() / 1000);
-			}
-		}
 	}
 	
 	public void updatePartOfTop9(Top3 top3OfCountry) {
@@ -28,20 +23,11 @@ public class Top9 {
 	}
 	
 	public Top3 toTop3() {
-		TopItem tempTop9[] = new TopItem[9];
+		Top3 result = new Top3();
 		for(int i = 0; i < 9; ++i) {
-			tempTop9[i] = items[i/3][i%3];
+			if(items[i/3][i%3] != null)
+				result.insert(items[i/3][i%3]);
 		}
-		
-		Arrays.sort(tempTop9, new Comparator<TopItem>() {
-			@Override
-			public int compare(TopItem o1, TopItem o2) {
-				return - o1.compareTo(o2);
-			}
-		});
-		
-
-		Top3 result = new Top3(tempTop9);
 		return result;
 	}
 }

@@ -9,7 +9,6 @@ import Utils.Utilities;
 
 public class Top3 {
 	private TopItem items[]; //Decreasing order 0 is Top1
-	private final int INVALID_ID = -39;
 	
 	public Top3() {
 		items = new TopItem[3];
@@ -25,7 +24,7 @@ public class Top3 {
 	
 	public void clear() {
 		for(int i = 0; i < 3; ++i) {
-			items[i] = new TopItem(INVALID_ID, Country.FRANCE, -1, INVALID_ID, new Date().getTime() / 1000);
+			items[i] = null;
 		} 
 	}
 	
@@ -34,13 +33,14 @@ public class Top3 {
 	}
 	
 	//Use country to skip checking for insertion/deletion mode
-	public void update(TreeNode<DataRow> lastNode, int newScore, Country country) {
+	public boolean update(TreeNode<DataRow> lastNode, int newScore, Country country) {
 		TreeNode<DataRow> lastNonZeroNode = lastNode.getRootWithScoreNonNull();
 		TopItem item = new TopItem(lastNonZeroNode.getData().getId(), country, newScore, lastNode.getData().getId(), lastNonZeroNode.getData().getDiagnosedTs());
-		this.insert(item);
+		return this.insert(item);
 	}
 	
-	public void insert(TopItem newItem) {
+	public boolean insert(TopItem newItem) {
+		boolean modified = true;
 		if(newItem.compareTo(items[2]) > 0) {
 			if(newItem.compareTo(items[1]) > 0) {
 				if(newItem.compareTo(items[0]) > 0) {
@@ -57,15 +57,11 @@ public class Top3 {
 				items[2] = newItem;
 			}
 		}
-	}
-	
-	private void sort() {
-		Arrays.sort(items, new Comparator<TopItem>() {
-			@Override
-			public int compare(TopItem o1, TopItem o2) {
-				return - o1.compareTo(o2);
-			}
-		});
+		else {
+			modified = false;
+		}
+		
+		return modified;
 	}
 	
 	private void swap(int i, int j) {
@@ -76,7 +72,9 @@ public class Top3 {
     public String toString() {
         String res = "";
         for(int i = 0; i < 3; ++i) {
-			res += items[i].toString() + (i < 2 ? "\n" : "");
+        	if(items[i] != null) {
+    			res += items[i].toString() + (i < 2 ? "\n" : "");
+        	}
         }
         return res;
     }
