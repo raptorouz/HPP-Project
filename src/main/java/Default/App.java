@@ -26,7 +26,7 @@ public class App {
 		for(Country tab[] : countries_) {
 			Top3Chains top3 = new Top3Chains(tab, path);
 			try {
-				top3.populate();
+				top3.debug(false);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
