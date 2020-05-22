@@ -19,50 +19,38 @@ public class SimpleTest {
     @Test
     public void naiveTest() throws IOException {
 
-        Country countries[] = { Country.FRANCE, Country.ITALY, Country.SPAIN };
-        String path = "../data/40/";
-        String result = "";
-        long start = System.nanoTime();
-        int index = 0;
+    	Country countries[] = {Country.SPAIN, Country.FRANCE, Country.ITALY};
+		Country countries1[] = {Country.SPAIN, Country.ITALY, Country.FRANCE};
+		Country countries2[] = {Country.FRANCE, Country.ITALY, Country.SPAIN};
+		Country countries3[] = {Country.FRANCE, Country.SPAIN, Country.ITALY};
+		
+		Country countries4[] = {Country.ITALY, Country.FRANCE, Country.SPAIN};
+		Country countries5[] = {Country.ITALY, Country.SPAIN, Country.FRANCE};
+		
+		Country[][] countries_ = {countries, countries1, countries2, countries3, countries4,
+				countries5};
 
-        for (Country country : countries) {
-            Forest forest = new Forest(country);
-            String countryString = country.toString().toLowerCase();
-            countryString = Character.toUpperCase(countryString.charAt(0)) + countryString.substring(1);
+		
+		String path = "../data/40/";
+		
+		for(Country tab[] : countries_) {
+			Top3Chains top3 = new Top3Chains(tab, path);
+			top3.debug(true);
 
-            String fullPath = path + countryString + ".csv";
-            File f = new File(fullPath);
+			String expected_result = "chainRootId=34, country=ITALY, score=20\n" + 
+					"chainRootId=32, country=FRANCE, score=10\n" + 
+					"chainRootId=35, country=ITALY, score=10";
+	        System.out.println(top3.toString());
+	        //System.out.println(expected_result);
 
-            BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(f), "UTF8"));
+	        assertEquals(expected_result, top3.toString());
+		}
+		
+		
+		
+		
 
-            String line;
-
-            while ((line = in.readLine()) != null) {
-                DataRow row = new DataRow(line);
-                forest.insert(row);
-            }
-            if(index<2)
-            {
-                result = result + forest.toString() + "\n";
-            }
-            else
-            {
-                result = result + forest.toString();
-            }
-
-            in.close();
-            index ++;
-
-        }
-
-
-        String expected_result = "FRANCE [32, 10]; [36, 10]; [28, 4]\n" + 
-                "ITALY [34, 20]; [35, 10]; [31, 4]\n" + 
-                "SPAIN [38, 10]; [39, 10]; [33, 4]";
-        System.out.println(result);
-        //System.out.println(expected_result);
-
-        assertEquals(expected_result, result);
+        
 
 
 
