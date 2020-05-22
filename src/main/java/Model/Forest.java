@@ -164,10 +164,10 @@ public class Forest implements Top3UpdateAvailableListener {
 	public void updateAvailable(TreeNode<DataRow> lastNode, int newScore) {
 		
 		//SHould return a boolean to check if there was effectively an update
-		top3.update(lastNode, newScore, this.country);
+		boolean wasUpdated = top3.update(lastNode, newScore, this.country);
 		
 		//Update Global Top3
-		if(updateListener != null) {
+		if(updateListener != null && wasUpdated) {
 			updateListener.updateAvailable(top3);
 		}
 		
