@@ -20,10 +20,6 @@ public class Top3Chains implements Top9UpdateAvailableListener {
 
 	private Top9 top9;
 
-	private final boolean DISPLAY_ALL_CHAINS = false;
-	private final boolean MEASURE_TIME = true;
-	private final boolean REDIRECT_OUTPUT_TO_FILE = false;
-
 	public Top3Chains(Country countries[], String folderPath) {
 		forests = new ArrayList<Forest>(3);
 		filepaths = new String[3];

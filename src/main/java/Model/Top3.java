@@ -80,12 +80,6 @@ public class Top3 {
         }
         return res;
     }
-
-	public void clear() {
-		for(int i = 0; i < 3; ++i) {
-			items[i] = new TopItem(INVALID_ID, Country.FRANCE, -1, INVALID_ID, new Date().getTime() / 1000);
-		}
-	}
 	
 	
 }
