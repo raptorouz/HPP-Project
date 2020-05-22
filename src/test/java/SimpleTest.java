@@ -45,15 +45,35 @@ public class SimpleTest {
 
 	        assertEquals(expected_result, top3.toString());
 		}
-		
-		
-		
-		
-
-        
-
-
-
     }
 
+	/**
+	 * Performs a test comparing the similarity between the output of method {@link Top3Chains#toString()} and an
+	 * expected string for the data test 40_1.
+	 *
+	 *
+	 * @throws IOException
+	 */
+	@Test
+	public void naiveTest1() throws IOException {
+
+		// Countries tested
+		Country countries[] = {Country.SPAIN, Country.FRANCE, Country.ITALY};
+
+		// Data path
+		String path = "resources/data/40_1/";
+
+		// Top3
+		Top3Chains top3 = new Top3Chains(countries, path);
+		top3.debug(true);
+
+		// String of expected result
+		String expected_result =
+				"chainRootId=34, country=ITALY, score=20\n" +
+						"chainRootId=32, country=FRANCE, score=10\n" +
+						"chainRootId=35, country=ITALY, score=10";
+
+		// Equal assertion
+		assertEquals(expected_result, top3.toString());
+	}
 }
