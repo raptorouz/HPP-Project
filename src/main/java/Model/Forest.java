@@ -86,7 +86,7 @@ public class Forest implements Top3UpdateAvailableListener {
 			
 			
 		}
-		
+		top3.clear();
 		//Update all leaves
     	this.updateAllScores(insertedNode.getData().getDiagnosedTs());
     	
