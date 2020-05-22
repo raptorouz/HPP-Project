@@ -1,8 +1,18 @@
 package Default;
 
+import Model.DataRow;
 import Model.Top3Chains;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+
+import javax.xml.crypto.Data;
 
 import Model.Forest.Country;
 
@@ -21,7 +31,7 @@ public class App {
 				countries5};
 
 		
-		String path = "../data/5000/";
+		String path = "resources/data/5000/";
 		
 		for(Country tab[] : countries_) {
 			Top3Chains top3 = new Top3Chains(tab, path);
@@ -34,5 +44,38 @@ public class App {
 		}
 		
 	}
-
+	
+//	public static void main(String[] args) throws IOException {
+//		File f = new File("resources/data/40_3/Spain.csv");
+//		BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(f), "UTF8"));
+//
+//		File fo = new File("resources/data/40_3/Spain_output.csv");
+//		BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fo), "UTF8"));
+//
+//		String lastLine = "";
+//		String sCurrentLine;
+//		
+//	    while ((sCurrentLine = in.readLine()) != null) 
+//	    {
+//	        lastLine = sCurrentLine;
+//	    }
+//	    
+//	    long lastTimeStamp = new DataRow(lastLine).getDiagnosedTs();
+//	    in.close();
+//	    BufferedReader in2 = new BufferedReader(new InputStreamReader(new FileInputStream(f), "UTF8"));
+//		
+//		in2.lines().forEach(line -> {
+//			DataRow row = new DataRow(line);
+//			try {
+//				out.write(row.toDebugString(lastTimeStamp) + "\n");
+//			} catch (IOException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//		});
+//		
+//		in2.close();
+//		out.close();
+//	}
 }
+
