@@ -1,13 +1,6 @@
 import static org.junit.Assert.*;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintStream;
-import java.io.UnsupportedEncodingException;
 
 import Model.*;
 import Model.Forest.Country;
@@ -27,7 +20,7 @@ public class SimpleTest {
 		Country countries5[] = {Country.ITALY, Country.SPAIN, Country.FRANCE};
 		
 		Country[][] countries_ = {countries, countries1, countries2, countries3, countries4,
-				countries5};	public void naiveTest() throws IOException {
+				countries5};
 
 		String path = "resources/data/40/";
 
@@ -72,8 +65,10 @@ public class SimpleTest {
 
 		// Equal assertion
 		assertEquals(expected_result, top3.toString());
-		}
+		
 	}
+	
+	
 	@Test
 	public void naiveTest3() throws IOException {
 
@@ -101,4 +96,6 @@ public class SimpleTest {
 			assertEquals(expected_result, top3.toString());
 		}
 	}
+	
+	
 }

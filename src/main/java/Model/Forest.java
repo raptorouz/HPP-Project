@@ -87,6 +87,8 @@ public class Forest implements Top3UpdateAvailableListener {
 			
 		}
 		top3.clear();
+		top3.clear();
+		
 		//Update all leaves
     	this.updateAllScores(insertedNode.getData().getDiagnosedTs());
     	
@@ -160,11 +162,6 @@ public class Forest implements Top3UpdateAvailableListener {
 
 	@Override
 	public void updateAvailable(TreeNode<DataRow> lastNode, int newScore) {
-		
-//		//Forward to parent
-//		if(this.updateListener != null) {
-//			this.updateListener.updateAvailable(lastNode, newScore, this.country);
-//		}
 		
 		//SHould return a boolean to check if there was effectively an update
 		top3.update(lastNode, newScore, this.country);

@@ -23,44 +23,21 @@ public class Top3 {
 		}
 	}
 	
+	public void clear() {
+		for(int i = 0; i < 3; ++i) {
+			items[i] = new TopItem(INVALID_ID, Country.FRANCE, -1, INVALID_ID, new Date().getTime() / 1000);
+		} 
+	}
+	
 	public TopItem itemAt(int index) {
 		return items[index];
 	}
 	
 	//Use country to skip checking for insertion/deletion mode
 	public void update(TreeNode<DataRow> lastNode, int newScore, Country country) {
-		Integer top3Index = null;
-		TreeNode<DataRow> currentNode = lastNode;
-		TreeNode<DataRow> lastNonZeroNode = null;
-		
-		do {
-			int i = 0;
-			while(top3Index == null && i < items.length) {
-				if(currentNode.getData().getId() == items[i].getChainLeafId()) {
-					top3Index = i;
-				}
-				++i;
-			}
-			currentNode = currentNode.getParent();
-		} while(currentNode != null && currentNode.getParent() != null);
-		
-		lastNonZeroNode = lastNode.getRootWithScoreNonNull();
-		
-		//CurrentNode is now root node
-		//top3Index is either null or in [0, 2]
-		
-		if(top3Index == null) {
-			TopItem item = new TopItem(lastNonZeroNode.getData().getId(), country, newScore, lastNode.getData().getId(), lastNonZeroNode.getData().getDiagnosedTs());
-			this.insert(item);
-			
-		}
-		else { //Update value
-			TopItem item = new TopItem(lastNonZeroNode.getData().getId(), country, newScore, 
-					lastNode.getData().getId(), lastNonZeroNode.getData().getDiagnosedTs());
-			items[top3Index] = item;
-			sort();
-		}
-		
+		TreeNode<DataRow> lastNonZeroNode = lastNode.getRootWithScoreNonNull();
+		TopItem item = new TopItem(lastNonZeroNode.getData().getId(), country, newScore, lastNode.getData().getId(), lastNonZeroNode.getData().getDiagnosedTs());
+		this.insert(item);
 	}
 	
 	public void insert(TopItem newItem) {
@@ -99,16 +76,10 @@ public class Top3 {
     public String toString() {
         String res = "";
         for(int i = 0; i < 3; ++i) {
-            res += items[i].toString() + (i < 2 ? "\n" : "");
+			res += items[i].toString() + (i < 2 ? "\n" : "");
         }
         return res;
     }
-
-	public void clear() {
-		for(int i = 0; i < 3; ++i) {
-			items[i] = new TopItem(INVALID_ID, Country.FRANCE, -1, INVALID_ID, new Date().getTime() / 1000);
-		}
-	}
 	
 	
 }

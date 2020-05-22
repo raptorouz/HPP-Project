@@ -72,6 +72,13 @@ public class DataRow {
 				Utils.Utilities.timestampToString(diagnosedTs)
 				+ ", contaminatedBy=" + contaminatedBy + "]";
 	}
+	
+	public String toDebugString(long latestTs) {
+		return "" + id + ", " + (firstName != null ? firstName + ", " : "")
+				+ (lastName != null ? lastName + ", " : "") + 
+				Utils.Utilities.distanceToLatestDate(diagnosedTs, latestTs)
+				+ ", " + contaminatedBy;
+	}
 
 	public void setContaminatedBy(int contaminatedBy) {
 		this.contaminatedBy = contaminatedBy;
