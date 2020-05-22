@@ -13,9 +13,7 @@ public class Top3 {
 	
 	public Top3() {
 		items = new TopItem[3];
-		for(int i = 0; i < 3; ++i) {
-			items[i] = new TopItem(INVALID_ID, Country.FRANCE, -1, INVALID_ID, new Date().getTime() / 1000);
-		}
+		this.clear();
 	}
 	
 	public Top3(TopItem top9[]) {
@@ -98,12 +96,18 @@ public class Top3 {
 	}
 
 	@Override
-	public String toString() {
-		String res = "";
+    public String toString() {
+        String res = "";
+        for(int i = 0; i < 3; ++i) {
+            res += items[i].toString() + (i < 2 ? "\n" : "");
+        }
+        return res;
+    }
+
+	public void clear() {
 		for(int i = 0; i < 3; ++i) {
-			res += items[i].toString() + "\n";
+			items[i] = new TopItem(INVALID_ID, Country.FRANCE, -1, INVALID_ID, new Date().getTime() / 1000);
 		}
-		return res;
 	}
 	
 	
