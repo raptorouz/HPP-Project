@@ -23,7 +23,10 @@ public class TopItem implements Comparable<TopItem>{
 
 	@Override
 	public int compareTo(TopItem other) {
-		return this.score != other.score ? this.score - other.score : -(int)(this.getRootTs() - other.getRootTs());
+		if(other != null)
+			return this.score != other.score ? this.score - other.score : -(int)(this.getRootTs() - other.getRootTs());
+		else
+			return 1;
 	}
 
 	@Override
