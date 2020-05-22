@@ -1,0 +1,8 @@
+3, "A", "B", 1995-08-21 00:00:00, 1580018399.0, unknown, "course à pieds avec la grand-mère au marché" , 0
+12, "A", "B", 1995-08-21 00:00:00, 1588028399.0, 3, "course à pieds avec la grand-mère au marché", H - 336 -1 : 0
+22, "Daniel", "ROBINSON", 1995-08-21 00:00:00, 1588028400.0, 12, "course à pieds avec la grand-mère au marché", H - 336 : 4
+32, "Ashley", "WARD", 1976-03-12 00:00:00, 1588028401.0, 22, "apéro avec des copains en ville", H - 336 + 1: 4
+42, "A", "B", 1995-08-21 00:00:00, 1588633199.0, 32, "course à pieds avec la grand-mère au marché", H - 168 - 1s: 4
+52, "Daniel", "ROBINSON", 1995-08-21 00:00:00, 1588633200.0, 42, "course à pieds avec la grand-mère au marché", H - 168 : 10
+62, "Ashley", "WARD", 1976-03-12 00:00:00, 1588633201.0, 52, "apéro avec des copains en ville", H - 168 + 1s: 10
+72, "Joseph", "JONES", 2013-04-09 00:00:00, 1589238000.0, 62, "vélo avec des copines à la campagne", H : 10

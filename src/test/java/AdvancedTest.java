@@ -123,7 +123,37 @@ public class AdvancedTest {
 		
 	}
 
-	
+	/**
+	 * Test Borderlines cases, i.e. boundaries
+	 *
+	 * France is used to test 168H boundaries
+	 * Italy is used to test 336H boundaries
+	 * Spain is used to test 168H and 168H boundaries
+	 *
+	 * @throws IOException
+	 */
+	@Test
+	public void testBorderlinesCases() throws IOException {
+		// Countries tested
+		Country countries[] = {Country.SPAIN, Country.FRANCE, Country.ITALY};
+
+		// Data path
+		String path = "resources/data/boundaries/";
+
+		// Top3
+		Top3Chains top3 = new Top3Chains(countries, path);
+		top3.debug(true);
+
+		// String of expected result
+		String expected_result =
+				"chainRootId=22, country=SPAIN, score=42\n" +
+						"chainRootId=10, country=FRANCE, score=34\n" +
+						"chainRootId=21, country=ITALY, score=18";
+
+		// Equal assertion
+		assertEquals(expected_result, top3.toString());
+
+	}
 }
 
 

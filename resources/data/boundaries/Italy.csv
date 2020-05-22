@@ -1,0 +1,5 @@
+2, "A", "B", 1995-08-21 00:00:00, 1580018399.0, unknown, "course à pieds avec la grand-mère au marché"
+11, "A", "B", 1995-08-21 00:00:00, 1588028399.0, 2, "course à pieds avec la grand-mère au marché"
+21, "Daniel", "ROBINSON", 1995-08-21 00:00:00, 1588028400.0, 11, "course à pieds avec la grand-mère au marché"
+31, "Ashley", "WARD", 1976-03-12 00:00:00, 1588028401.0, 21, "apéro avec des copains en ville"
+41, "Joseph", "JONES", 2013-04-09 00:00:00, 1589238000.0, 31, "vélo avec des copines à la campagne"
