@@ -2,6 +2,7 @@ package Default;
 
 import Model.Forest;
 import Model.Top3Chains;
+import Thread.DeserializationThread;
 import Thread.WorkerThread;
 
 import java.io.IOException;
@@ -27,9 +28,28 @@ public class App {
 		}
 		
 		
+		long start = System.nanoTime();
 		for(int i = 0; i < 3; ++i) {
 			threads[i].start();
 		}
+		
+		DeserializationThread deserRunnable = new DeserializationThread(top3Fifo);
+		Thread deserThread = new Thread(deserRunnable);
+		deserThread.start();
+		
+		for(int i = 0; i < 3; ++i) {
+			try {
+				threads[i].join();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		deserThread.interrupt();	
+		
+		long end = System.nanoTime();
+		float ms = (end - start) / 1000000;
+		System.out.println(ms + " ms");
 	}
 
 }
