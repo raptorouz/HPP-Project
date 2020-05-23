@@ -16,9 +16,12 @@ public class Top9 {
 	
 	public void updatePartOfTop9(Top3 top3OfCountry) {
 		int index = top3OfCountry.itemAt(0).getCountry().ordinal();
-		for(int i = 0; i < 3; ++i) {
-			items[index][i] = top3OfCountry.itemAt(i);
+		if(index < 3) {
+			for(int i = 0; i < 3; ++i) {
+				items[index][i] = top3OfCountry.itemAt(i);
+			}
 		}
+		
 	}
 	
 	public Top3 toTop3() {
