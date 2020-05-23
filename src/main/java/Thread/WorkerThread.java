@@ -37,7 +37,6 @@ public class WorkerThread implements Runnable, Top9UpdateAvailableListener {
 
 	@Override
 	public void run() {
-		long start = System.nanoTime();
 		File f = new File(filepath);
 		
 		try(BufferedReader in = 
@@ -49,12 +48,6 @@ public class WorkerThread implements Runnable, Top9UpdateAvailableListener {
 			});
 		} catch (IOException  e) {
 			e.printStackTrace();
-		}
-		
-		long end = System.nanoTime();
-		float ms = (end - start) / 1000000;
-		synchronized (System.out) {
-			System.out.println("" + country + ms + " ms");
 		}
 
 	}
