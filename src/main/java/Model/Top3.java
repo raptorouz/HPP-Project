@@ -15,6 +15,13 @@ public class Top3 {
 		this.clear();
 	}
 	
+	public Country getCountry() {
+		if(items[0] == null) {
+			return Country.NONE;
+		}
+		else return items[0].getCountry();
+	}
+	
 	public void clear() {
 		for(int i = 0; i < 3; ++i) {
 			items[i] = null;

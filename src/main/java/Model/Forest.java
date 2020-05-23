@@ -17,7 +17,8 @@ public class Forest implements Top3UpdateAvailableListener {
 	public enum Country {
 		FRANCE,
 		ITALY,
-		SPAIN
+		SPAIN,
+		NONE
 	};
 	private Country country;
 	private Top9UpdateAvailableListener updateListener;
