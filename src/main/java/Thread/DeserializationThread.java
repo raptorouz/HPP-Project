@@ -1,4 +1,4 @@
-package Model;
+package Thread;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -7,6 +7,9 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 import javax.swing.plaf.SliderUI;
 
+import Model.Top3;
+import Model.Top9;
+
 public class DeserializationThread implements Runnable {
 	
 	ConcurrentLinkedQueue<Top3> waitingQueue;
@@ -14,19 +17,29 @@ public class DeserializationThread implements Runnable {
 	FileWriter writer;
 	BufferedWriter buffer;
 	
-	public DeserializationThread(ConcurrentLinkedQueue<Top3> waitingQueue) throws IOException {
+	private final static int WAIT_FOR_MILLIS = 20;
+	
+	public DeserializationThread(ConcurrentLinkedQueue<Top3> waitingQueue) {
 
 		this.waitingQueue = waitingQueue;
 		this.top9 = new Top9();
 		
-		writer = new FileWriter("Global_Top3.txt");  
+		try {
+			writer = new FileWriter("Global_Top3.txt");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}  
 	    buffer = new BufferedWriter(writer); 
 	}
 	
-	public void WriteInFile(Top3 item) throws IOException {
+	public synchronized void writeInFile(Top3 item) {
 		
-	    buffer.write(top9.toTop3().toString());  
-	    buffer.flush();		
+	    try {
+			buffer.write(top9.toTop3().toString() + "\n");
+		    //buffer.flush();		
+		} catch (IOException e) {
+			e.printStackTrace();
+		}  
 	}
 
 	@Override
@@ -34,26 +47,26 @@ public class DeserializationThread implements Runnable {
 		while(true)
 		{
 			Top3 element;
-			while((element=waitingQueue.poll()) != null)
+			synchronized (this) {
+				while((element = waitingQueue.poll()) != null)
+				{
+					top9.updatePartOfTop9(element);
+					writeInFile(element);
+				}
+			}
+			
+			if(Thread.interrupted())
 			{
-				top9.updatePartOfTop9(element);
 				try {
-					WriteInFile(element);
+					buffer.close();
 				} catch (IOException e) {
-
 					e.printStackTrace();
 				}
+				break;
 			}
-			try {
-				if(Thread.interrupted())
-				{
-					buffer.close();
-					break;
-				}
-				Thread.sleep(20);
-			} catch (InterruptedException | IOException e) {
-				e.printStackTrace();
-			}
-		}	
+		}
+		
+		int a = 0;
 	}
+	
 }
