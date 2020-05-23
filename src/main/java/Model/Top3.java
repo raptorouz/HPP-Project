@@ -15,13 +15,6 @@ public class Top3 {
 		this.clear();
 	}
 	
-	public Top3(TopItem top9[]) {
-		items = new TopItem[3];
-		for(int i = 0; i < 3; ++i) {
-			items[i] = top9[i];
-		}
-	}
-	
 	public void clear() {
 		for(int i = 0; i < 3; ++i) {
 			items[i] = null;
@@ -70,13 +63,17 @@ public class Top3 {
 
 	@Override
     public String toString() {
-        String res = "";
-        for(int i = 0; i < 3; ++i) {
+        StringBuilder res = new StringBuilder();
+        int i;
+        for(i = 0; i < 2; ++i) {
         	if(items[i] != null) {
-    			res += items[i].toString() + (i < 2 ? "\n" : "");
+    			res.append(items[i].toString());
+    			res.append("\n");
         	}
         }
-        return res;
+        if(items[2] != null)
+        	res.append(items[i].toString());
+        return res.toString();
     }
 	
 	
