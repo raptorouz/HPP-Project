@@ -67,7 +67,7 @@ public class TopItem implements Comparable<TopItem>{
 
 	@Override
 	public String toString() {
-		return "chainRootId=" + chainRootId + ", " + (country != null ? "country=" + country + ", " : "")
+		return "chainRootId=" + chainRootId + ", " + "country=" + country + ", "
 				+ "score=" + score;
 	}
 	

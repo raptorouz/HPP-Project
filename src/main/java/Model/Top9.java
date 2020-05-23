@@ -8,7 +8,6 @@ import java.util.Date;
 import Model.Forest.Country;
 
 public class Top9 {
-	private static final int INVALID_ID = -39;
 	private TopItem items[][];
 	
 	public Top9() {
