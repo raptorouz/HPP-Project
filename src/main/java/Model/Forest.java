@@ -12,7 +12,7 @@ public class Forest implements Top3UpdateAvailableListener {
 	private Top3 top3;
 	
 	private static int INSERT_COUNT = 0;
-	private static final int FREE_EACH_INSERTS = 30;
+	private static final int FREE_EACH_INSERTS = 1000;
 	
 	public enum Country {
 		FRANCE,
@@ -40,10 +40,6 @@ public class Forest implements Top3UpdateAvailableListener {
 					(i == 1 ? " ###################" : ""));
 			tree.displayFromAllLeaves();
 		}
-	}
-	
-	public void updateTop3IfNeeded(TreeNode<DataRow> lastNode, int newScore) {	
-		
 	}
 	
 	public void updateAllScores(long lastestDiagnosedTs) {
