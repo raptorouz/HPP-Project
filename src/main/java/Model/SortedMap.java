@@ -7,7 +7,7 @@ import java.util.TreeSet;
 
 import Utils.Entry;
 
-public class SortedMap <K, V extends Comparable<V>> {
+public class SortedMap <K extends TreeNode<DataRow>, V extends Comparable<V>> { 
 	private TreeSet<Entry<K, V>> leafScoreSet;
 	private HashMap<K, V> leafScoreMap;
 	
