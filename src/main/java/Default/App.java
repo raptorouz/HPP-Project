@@ -14,14 +14,13 @@ public class App {
 
 		Country countries[] = {Country.FRANCE, Country.SPAIN, Country.ITALY };
 		//String path = "resources/data/1000000/";
-		String path = "resources/data/50000/";
+		String path = "resources/data/100000/";
 
 		long start = System.nanoTime();
 		String res = "NO result Yet !";
 		try {
 			res = process(path, countries);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		long end = System.nanoTime();
@@ -29,6 +28,8 @@ public class App {
 		System.out.println(s + " s");
 		
 		System.out.println(res);
+		
+		System.exit(0);
 	}
 	
 	public static String process(String path, Country countries[]) throws InterruptedException {
