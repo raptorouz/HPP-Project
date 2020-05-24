@@ -49,12 +49,12 @@ public class SortedMap <K, V extends Comparable<V>> {
 	}
 	
 	public boolean AreAllValuesZero() {
-		int sum = 0;
+		boolean allZero = true;
 		Iterator<V> iter = leafScoreMap.values().iterator();
-		while(iter.hasNext() && sum == 0)
+		while(iter.hasNext() && allZero)
 		{
-			sum += (int) iter.next(); 
+			allZero = allZero && iter.next().equals(0); 
 		}
-		return sum == 0;
+		return allZero;
 	}
 }
