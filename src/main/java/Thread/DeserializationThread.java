@@ -17,7 +17,7 @@ public class DeserializationThread implements Runnable {
 	FileWriter writer;
 	BufferedWriter buffer;
 	
-	private final static int WAIT_FOR_MILLIS = 20;
+	private final static int WAIT_FOR_MILLIS = 50;
 	
 	public DeserializationThread(ConcurrentLinkedQueue<Top3> waitingQueue) {
 
@@ -47,12 +47,10 @@ public class DeserializationThread implements Runnable {
 		while(true)
 		{
 			Top3 element;
-			synchronized (this) {
-				while((element = waitingQueue.poll()) != null)
-				{
-					top9.updatePartOfTop9(element);
-					writeInFile(element);
-				}
+			while((element = waitingQueue.poll()) != null)
+			{
+				top9.updatePartOfTop9(element);
+				writeInFile(element);
 			}
 			
 			if(Thread.interrupted())
@@ -64,9 +62,14 @@ public class DeserializationThread implements Runnable {
 				}
 				break;
 			}
+			
+			try {
+				Thread.sleep(WAIT_FOR_MILLIS);
+			} catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
+			}
 		}
-		
-		int a = 0;
+	
 	}
 	
 }
