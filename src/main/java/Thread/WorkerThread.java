@@ -11,6 +11,7 @@ import Interface.Top9UpdateAvailableListener;
 import Model.DataRow;
 import Model.Forest;
 import Model.Top3;
+import Utils.Utilities;
 import Model.Forest.Country;
 
 public class WorkerThread implements Runnable, Top9UpdateAvailableListener {
@@ -18,14 +19,15 @@ public class WorkerThread implements Runnable, Top9UpdateAvailableListener {
 	private Forest forest;
 	private String filepath;
 	private ConcurrentLinkedQueue<Top3> top3Fifo;
-	private Country country;
 	
 	public WorkerThread(Country country, String folderPath, ConcurrentLinkedQueue<Top3> top3Fifo) {
 		super();
 		this.top3Fifo = top3Fifo;
-		this.country = country;
 		
-		forest = new Forest(country);
+		int nbCasesInFile = Integer.parseInt(folderPath.split("/")[2]);
+		int freeEachInserts = Utilities.computeFreeEachInsert(nbCasesInFile);
+		
+		forest = new Forest(country, freeEachInserts);
 		filepath = new String();
 		forest.setUpdateAvailableListener(this);
 
