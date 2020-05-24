@@ -25,8 +25,8 @@ public class App {
 			e.printStackTrace();
 		}
 		long end = System.nanoTime();
-		float ms = (end - start) / 1000000;
-		System.out.println(ms + " ms");
+		double s = (end - start) / 1000000000.0;
+		System.out.println(s + " s");
 		
 		System.out.println(res);
 	}
