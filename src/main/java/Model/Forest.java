@@ -12,7 +12,7 @@ public class Forest implements Top3UpdateAvailableListener {
 	private Top3 top3;
 	
 	private static int INSERT_COUNT = 0;
-	private static final int FREE_EACH_INSERTS = 1000;
+	private int FREE_EACH_NB_INSERTS = 4;
 	
 	public enum Country {
 		FRANCE,
@@ -27,6 +27,11 @@ public class Forest implements Top3UpdateAvailableListener {
 		trees = new ArrayList<Tree>();
 		this.country = country;
 		top3 = new Top3();
+	}
+	
+	public Forest(Country country, int freeEachNbInserts) {
+		this(country);
+		this.FREE_EACH_NB_INSERTS = freeEachNbInserts;
 	}
 	
 	public void setUpdateAvailableListener(Top9UpdateAvailableListener listener) {
@@ -44,7 +49,7 @@ public class Forest implements Top3UpdateAvailableListener {
 	
 	public void updateAllScores(long lastestDiagnosedTs) {
 		for(Tree tree : trees) {
-			tree.updateFromAllLeaves(lastestDiagnosedTs);
+			tree.updateFromAllLeaves(lastestDiagnosedTs, top3);
 		}
 	}
 	
@@ -87,7 +92,7 @@ public class Forest implements Top3UpdateAvailableListener {
     	this.updateAllScores(insertedNode.getData().getDiagnosedTs());
     	
     	//Free empty trees
-    	if(INSERT_COUNT % FREE_EACH_INSERTS == 0) {
+    	if(INSERT_COUNT % FREE_EACH_NB_INSERTS == 0) {
         	freeEmptyTrees();
     	}
     	++INSERT_COUNT;
