@@ -32,6 +32,10 @@ public class Top3 {
 		return items[index];
 	}
 	
+	public Integer minScore() {
+		return items[2] == null ? 0 : items[2].getScore();
+	}
+	
 	//Use country to skip checking for insertion/deletion mode
 	public boolean update(TreeNode<DataRow> lastNode, int newScore, Country country) {
 		TreeNode<DataRow> lastNonZeroNode = lastNode.getRootWithScoreNonNull();
