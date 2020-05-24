@@ -24,8 +24,14 @@ public class WorkerThread implements Runnable, Top9UpdateAvailableListener {
 		super();
 		this.top3Fifo = top3Fifo;
 		
-		int nbCasesInFile = Integer.parseInt(folderPath.split("/")[2]);
-		int freeEachInserts = Utilities.computeFreeEachInsert(nbCasesInFile);
+		int freeEachInserts;
+		try {
+			int nbCasesInFile = Integer.parseInt(folderPath.split("/")[2].split("_")[0]);
+			freeEachInserts  = Utilities.computeFreeEachInsert(nbCasesInFile);
+		}
+		catch(NumberFormatException ex) {
+			freeEachInserts = 1;
+		}
 		
 		forest = new Forest(country, freeEachInserts);
 		filepath = new String();
