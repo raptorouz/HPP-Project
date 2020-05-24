@@ -36,7 +36,7 @@ public class DeserializationThread implements Runnable {
 		
 	    try {
 			buffer.write(top9.toTop3().toString() + "\n");
-		    //buffer.flush();		
+		    buffer.flush();		
 		} catch (IOException e) {
 			e.printStackTrace();
 		}  
@@ -71,5 +71,12 @@ public class DeserializationThread implements Runnable {
 		}
 	
 	}
+
+	@Override
+	public String toString() {
+		return top9.toTop3().toString();
+	}
+	
+	
 	
 }
