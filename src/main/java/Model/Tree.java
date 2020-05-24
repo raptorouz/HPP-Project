@@ -58,8 +58,18 @@ public class Tree {
     	Integer oldLeafScore = this.leaves.remove(node.getParent());
     	if(oldLeafScore == null) {
     		oldLeafScore = 0;
+    		//Get brother 
+//    		ArrayList<TreeNode<DataRow>> brothers = node.getParent().getChildren();
+//    		TreeNode<DataRow> brother = brothers.get(brothers.size() - 2);
+//    		if(brother == null) {
+//    			int a = 0;
+//    		}
+//    		oldLeafScore = leaves.get(brother) == null ? 0 : leaves.get(brother);
+    		oldLeafScore = computeChainExactScore(node);
     	}
-    	this.leaves.add(node, oldLeafScore + node.getScore());
+    	
+    	int score = node.getScore();
+    	this.leaves.add(node, oldLeafScore + score);
     	
     	return node;
     }
@@ -73,16 +83,15 @@ public class Tree {
     		TreeNode<DataRow> key = entry.getKey();
     		Integer value = entry.getValue();
     		
-    		boolean thisNodeIsTheLastInserted = key.getData().getDiagnosedTs() == lastestDiagnosedTs;
-    		Integer maxPossibleChainScore = value + (thisNodeIsTheLastInserted ? 10 : 0);
+    		//boolean thisNodeIsTheLastInserted = key.getData().getDiagnosedTs() == lastestDiagnosedTs;
+    		Integer maxPossibleChainScore = value ;//+ (thisNodeIsTheLastInserted ? 10 : 0);
     		
     		if(maxPossibleChainScore >= currentTop3.minScore()) {
     			int chainScore = updatePreviousScoresAndComputeTotalChainScore(key, lastestDiagnosedTs);
         		if(this.updateListener != null) {
         			this.updateListener.updateAvailable(key, chainScore);
         		}
-    		}
-    		
+    		} 
     		
     	});
     }
@@ -98,6 +107,18 @@ public class Tree {
     	else {
     		return score;
     	}
+    }
+    
+    private int computeChainExactScore(TreeNode<DataRow> leaf) {
+    	int totalScore = leaf.getScore();
+    	TreeNode<DataRow> currentNode = leaf.getParent();
+    	
+    	while(currentNode != null && currentNode.getScore() > 0) {
+    		totalScore += currentNode.getScore();
+    		currentNode = currentNode.getParent();
+    	}
+    	
+    	return totalScore;
     }
     
     public TreeNode<DataRow> searchForNode(int parentId) {
