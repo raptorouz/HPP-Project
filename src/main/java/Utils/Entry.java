@@ -2,7 +2,10 @@ package Utils;
 
 import java.util.Objects;
 
-public class Entry <K extends Object, V extends Comparable<V>> implements Comparable<Entry<K, V>> {
+import Model.DataRow;
+import Model.TreeNode;
+
+public class Entry <K extends TreeNode<DataRow>, V extends Comparable<V>> implements Comparable<Entry<K, V>> {
 	private K key;
 	private V value;
 	
@@ -16,6 +19,9 @@ public class Entry <K extends Object, V extends Comparable<V>> implements Compar
 		if(other != null) {
 			int res = - this.value.compareTo(other.value);
 			//System.out.println(Thread.currentThread().getName() + ": " + res);
+			if(res == 0) {
+				res = this.key.getData().getId() - other.key.getData().getId();
+			}
 			return res;
 		}
 		else {
