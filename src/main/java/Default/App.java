@@ -1,11 +1,8 @@
 package Default;
 
-import Model.Forest;
-import Model.Top3Chains;
 import Thread.DeserializationThread;
 import Thread.WorkerThread;
 
-import java.io.IOException;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import Model.Forest.Country;
@@ -16,8 +13,25 @@ public class App {
 	public static void main(String[] args) {
 
 		Country countries[] = {Country.FRANCE, Country.SPAIN, Country.ITALY };
+		//String path = "resources/data/1000000/";
 		String path = "resources/data/50000/";
+
+		long start = System.nanoTime();
+		String res = "NO result Yet !";
+		try {
+			res = process(path, countries);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		long end = System.nanoTime();
+		float ms = (end - start) / 1000000;
+		System.out.println(ms + " ms");
 		
+		System.out.println(res);
+	}
+	
+	public static String process(String path, Country countries[]) throws InterruptedException {
 		ConcurrentLinkedQueue<Top3> top3Fifo = new ConcurrentLinkedQueue<Top3>();
 		
 		WorkerThread workers[] = new WorkerThread[3];
@@ -28,7 +42,6 @@ public class App {
 		}
 		
 		
-		long start = System.nanoTime();
 		for(int i = 0; i < 3; ++i) {
 			threads[i].start();
 		}
@@ -45,11 +58,9 @@ public class App {
 			}
 		}
 		
-		deserThread.interrupt();	
-		
-		long end = System.nanoTime();
-		float ms = (end - start) / 1000000;
-		System.out.println(ms + " ms");
+		deserThread.interrupt();
+		deserThread.join();
+		return deserRunnable.toString();
 	}
 
 }
