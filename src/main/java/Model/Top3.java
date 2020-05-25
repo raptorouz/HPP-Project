@@ -12,7 +12,13 @@ public class Top3 {
 	
 	public Top3() {
 		items = new TopItem[3];
-		this.clear();
+	}
+	
+	public Top3(Top3 other) {
+		items = new TopItem[3];
+		for(int i = 0; i < 3; ++i) {
+			items[i] = other.items[i];
+		}
 	}
 	
 	public Country getCountry() {
