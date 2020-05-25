@@ -38,5 +38,9 @@ public class Utilities {
 		  a[i] = a[j];
 		  a[j] = t;
 	}
+	
+	public static int computeFreeEachInsert(int nbOfCasesInFile) {
+		return (int) (Math.pow(nbOfCasesInFile, 0.70) * Math.log(nbOfCasesInFile));
+	}
 
 }

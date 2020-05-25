@@ -2,6 +2,7 @@ import static org.junit.Assert.*;
 
 import java.io.IOException;
 
+import Default.App;
 import Model.*;
 import Model.Forest.Country;
 
@@ -9,8 +10,14 @@ import org.junit.Test;
 
 public class SimpleTest {
 
+	/**
+	 * Performs a multithreading test comparing the similarity between the output of method {@link #toString()} of DeserializationThread and an
+	 * expected string for the data test 40.
+	 *
+	 * @throws IOException
+	 */
 	@Test
-	public void naiveTest() throws IOException {
+	public void multithreadingTest() throws IOException, InterruptedException {
 		Country countries[] = {Country.SPAIN, Country.FRANCE, Country.ITALY};
 		Country countries1[] = {Country.SPAIN, Country.ITALY, Country.FRANCE};
 		Country countries2[] = {Country.FRANCE, Country.ITALY, Country.SPAIN};
@@ -25,104 +32,118 @@ public class SimpleTest {
 		String path = "resources/data/40/";
 
 		for (Country tab[] : countries_) {
-			Top3Chains top3 = new Top3Chains(tab, path);
-			top3.debug(true);
+			String result = App.process(path,tab);
 
 			String expected_result = "chainRootId=34, country=ITALY, score=20\n"
-					+ "chainRootId=32, country=FRANCE, score=10\n" + "chainRootId=35, country=ITALY, score=10";
-			System.out.println(top3.toString());
-			// System.out.println(expected_result);
+					+ "chainRootId=32, country=FRANCE, score=10\n"
+					+ "chainRootId=35, country=ITALY, score=10";
 
-			assertEquals(expected_result, top3.toString());
+			assertEquals(expected_result, result);
 		}
 	}
 
 	/**
-	 * Performs a test comparing the similarity between the output of method {@link Top3Chains#toString()} and an
+	 * Performs a multithreading test comparing the similarity between the output of method {@link #toString()} of DeserializationThread and an
 	 * expected string for the data test 40_1.
-	 *
 	 *
 	 * @throws IOException
 	 */
 	@Test
-	public void naiveTest1() throws IOException {
+	public void multithreadingTest40_1() throws IOException, InterruptedException {
 
-		// Countries tested		
 		Country countries[] = {Country.SPAIN, Country.FRANCE, Country.ITALY};
+		Country countries1[] = {Country.SPAIN, Country.ITALY, Country.FRANCE};
+		Country countries2[] = {Country.FRANCE, Country.ITALY, Country.SPAIN};
+		Country countries3[] = {Country.FRANCE, Country.SPAIN, Country.ITALY};
 
-		// Data path
+		Country countries4[] = {Country.ITALY, Country.FRANCE, Country.SPAIN};
+		Country countries5[] = {Country.ITALY, Country.SPAIN, Country.FRANCE};
+
+		Country[][] countries_ = {countries, countries1, countries2, countries3, countries4,
+				countries5};
+
 		String path = "resources/data/40_1/";
 
-		// Top3
-		Top3Chains top3 = new Top3Chains(countries, path);
-		top3.debug(true);
+		for (Country tab[] : countries_) {
+			String result = App.process(path,tab);
 
-		// String of expected result
-		String expected_result =
-				"chainRootId=34, country=ITALY, score=20\n" +
-						"chainRootId=32, country=FRANCE, score=10\n" +
-						"chainRootId=35, country=ITALY, score=10";
+			String expected_result = "chainRootId=34, country=ITALY, score=20\n" +
+							"chainRootId=32, country=FRANCE, score=10\n" +
+							"chainRootId=35, country=ITALY, score=10";
 
-		// Equal assertion
-		assertEquals(expected_result, top3.toString());
+			assertEquals(expected_result, result);
+		}
 		
 	}
-	
+
+	/**
+	 * Performs a multithreading test comparing the similarity between the output of method {@link #toString()} of DeserializationThread and an
+	 * expected string for the data test 40_2.
+	 *
+	 * @throws IOException
+	 */
 	@Test
-	public void naiveTest2() throws IOException {
+	public void multithreadingTest40_2() throws IOException, InterruptedException {
 
-		Country countries[] = { Country.SPAIN, Country.FRANCE, Country.ITALY };
-		Country countries1[] = { Country.SPAIN, Country.ITALY, Country.FRANCE };
-		Country countries2[] = { Country.FRANCE, Country.ITALY, Country.SPAIN };
-		Country countries3[] = { Country.FRANCE, Country.SPAIN, Country.ITALY };
+		Country countries[] = {Country.SPAIN, Country.FRANCE, Country.ITALY};
+		Country countries1[] = {Country.SPAIN, Country.ITALY, Country.FRANCE};
+		Country countries2[] = {Country.FRANCE, Country.ITALY, Country.SPAIN};
+		Country countries3[] = {Country.FRANCE, Country.SPAIN, Country.ITALY};
 
-		Country countries4[] = { Country.ITALY, Country.FRANCE, Country.SPAIN };
-		Country countries5[] = { Country.ITALY, Country.SPAIN, Country.FRANCE };
+		Country countries4[] = {Country.ITALY, Country.FRANCE, Country.SPAIN};
+		Country countries5[] = {Country.ITALY, Country.SPAIN, Country.FRANCE};
 
-		Country[][] countries_ = { countries, countries1, countries2, countries3, countries4, countries5 };
+		Country[][] countries_ = {countries, countries1, countries2, countries3, countries4,
+				countries5};
 
 		String path = "resources/data/40_2/";
 
 		for (Country tab[] : countries_) {
-			Top3Chains top3 = new Top3Chains(tab, path);
-			top3.debug(true);
+			String result = App.process(path,tab);
+
 
 			String expected_result = "chainRootId=34, country=ITALY, score=20\n"
-					+ "chainRootId=33, country=SPAIN, score=14\n" + "chainRootId=32, country=FRANCE, score=10";
-			System.out.println(top3.toString());
-			// System.out.println(expected_result);
+					+ "chainRootId=33, country=SPAIN, score=14\n"
+					+ "chainRootId=32, country=FRANCE, score=10";
 
-			assertEquals(expected_result, top3.toString());
+			assertEquals(expected_result, result);
 		}
 
 	}
-	
+
+	/**
+	 * Performs a multithreading test comparing the similarity between the output of method {@link #toString()} of DeserializationThread and an
+	 * expected string for the data test 40_3.
+	 *
+	 * @throws IOException
+	 */
 	@Test
-	public void naiveTest3() throws IOException {
+	public void multithreadingTest40_3() throws IOException, InterruptedException {
 
-		Country countries[] = { Country.SPAIN, Country.FRANCE, Country.ITALY };
-		Country countries1[] = { Country.SPAIN, Country.ITALY, Country.FRANCE };
-		Country countries2[] = { Country.FRANCE, Country.ITALY, Country.SPAIN };
-		Country countries3[] = { Country.FRANCE, Country.SPAIN, Country.ITALY };
+		Country countries[] = {Country.SPAIN, Country.FRANCE, Country.ITALY};
+		Country countries1[] = {Country.SPAIN, Country.ITALY, Country.FRANCE};
+		Country countries2[] = {Country.FRANCE, Country.ITALY, Country.SPAIN};
+		Country countries3[] = {Country.FRANCE, Country.SPAIN, Country.ITALY};
 
-		Country countries4[] = { Country.ITALY, Country.FRANCE, Country.SPAIN };
-		Country countries5[] = { Country.ITALY, Country.SPAIN, Country.FRANCE };
+		Country countries4[] = {Country.ITALY, Country.FRANCE, Country.SPAIN};
+		Country countries5[] = {Country.ITALY, Country.SPAIN, Country.FRANCE};
 
-		Country[][] countries_ = { countries, countries1, countries2, countries3, countries4, countries5 };
+		Country[][] countries_ = {countries, countries1, countries2, countries3, countries4,
+				countries5};
 
 		String path = "resources/data/40_3/";
 
 		for (Country tab[] : countries_) {
-			Top3Chains top3 = new Top3Chains(tab, path);
-			top3.debug(true);
+			String result = App.process(path,tab);
+
 
 			String expected_result = "chainRootId=31, country=ITALY, score=14\n"
-					+ "chainRootId=32, country=FRANCE, score=10\n" + "chainRootId=34, country=ITALY, score=10";
-			System.out.println(top3.toString());
-			// System.out.println(expected_result);
+					+ "chainRootId=32, country=FRANCE, score=10\n"
+					+ "chainRootId=34, country=ITALY, score=10";
 
-			assertEquals(expected_result, top3.toString());
+			assertEquals(expected_result, result);
 		}
+
 	}
 	
 	

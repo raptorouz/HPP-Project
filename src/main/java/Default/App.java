@@ -1,59 +1,68 @@
 package Default;
 
-import Model.Top3Chains;
+import Thread.DeserializationThread;
+import Thread.WorkerThread;
 
-import java.io.IOException;
+import java.util.concurrent.ConcurrentLinkedQueue;
+
 import Model.Forest.Country;
+import Model.Top3;
 
 public class App {
 	
 	public static void main(String[] args) {
 
-		Country countries[] = {Country.SPAIN, Country.FRANCE, Country.ITALY};
-		String path = "resources/data/1000000/";
-		
-		for(int i = 0; i < 1; ++i) {
-			Top3Chains top3 = new Top3Chains(countries, path);
-			try {
-				top3.debug(false);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}	
+		Country countries[] = {Country.FRANCE, Country.SPAIN, Country.ITALY };
+		//String path = "resources/data/1000000/";
+		String path = "resources/data/100000/";
+
+		long start = System.nanoTime();
+		String res = "NO result Yet !";
+		try {
+			res = process(path, countries);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
 		}
+		long end = System.nanoTime();
+		double s = (end - start) / 1000000000.0;
+		System.out.println(s + " s");
+		
+		System.out.println(res);
+		
+		System.exit(0);
 	}
 	
-//	public static void main(String[] args) throws IOException {
-//		File f = new File("resources/data/40_3/Spain.csv");
-//		BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(f), "UTF8"));
-//
-//		File fo = new File("resources/data/40_3/Spain_output.csv");
-//		BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fo), "UTF8"));
-//
-//		String lastLine = "";
-//		String sCurrentLine;
-//		
-//	    while ((sCurrentLine = in.readLine()) != null) 
-//	    {
-//	        lastLine = sCurrentLine;
-//	    }
-//	    
-//	    long lastTimeStamp = new DataRow(lastLine).getDiagnosedTs();
-//	    in.close();
-//	    BufferedReader in2 = new BufferedReader(new InputStreamReader(new FileInputStream(f), "UTF8"));
-//		
-//		in2.lines().forEach(line -> {
-//			DataRow row = new DataRow(line);
-//			try {
-//				out.write(row.toDebugString(lastTimeStamp) + "\n");
-//			} catch (IOException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-//		});
-//		
-//		in2.close();
-//		out.close();
-//	}
+	public static String process(String path, Country countries[]) throws InterruptedException {
+		ConcurrentLinkedQueue<Top3> top3Fifo = new ConcurrentLinkedQueue<Top3>();
+		
+		WorkerThread workers[] = new WorkerThread[3];
+		Thread threads[] = new Thread[3];
+		for(int i = 0; i < 3; ++i) {
+			workers[i] = new WorkerThread(countries[i], path, top3Fifo);
+			threads[i] = new Thread(workers[i]);
+		}
+		
+		
+		for(int i = 0; i < 3; ++i) {
+			threads[i].start();
+		}
+		
+		DeserializationThread deserRunnable = new DeserializationThread(top3Fifo);
+		Thread deserThread = new Thread(deserRunnable);
+		deserThread.start();
+		
+		for(int i = 0; i < 3; ++i) {
+			try {
+				threads[i].join();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		deserThread.interrupt();
+		deserThread.join();
+		return deserRunnable.toString();
+	}
+
 }
 

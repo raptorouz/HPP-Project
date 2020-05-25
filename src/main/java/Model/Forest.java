@@ -11,13 +11,14 @@ public class Forest implements Top3UpdateAvailableListener {
 	private ArrayList<Tree> trees;
 	private Top3 top3;
 	
-	private static int INSERT_COUNT = 0;
-	private static final int FREE_EACH_INSERTS = 30;
+	private static int INSERT_COUNT = 1;
+	private int FREE_EACH_NB_INSERTS = 20000;
 	
 	public enum Country {
 		FRANCE,
 		ITALY,
-		SPAIN
+		SPAIN,
+		NONE
 	};
 	private Country country;
 	private Top9UpdateAvailableListener updateListener;
@@ -26,6 +27,11 @@ public class Forest implements Top3UpdateAvailableListener {
 		trees = new ArrayList<Tree>();
 		this.country = country;
 		top3 = new Top3();
+	}
+	
+	public Forest(Country country, int freeEachNbInserts) {
+		this(country);
+		this.FREE_EACH_NB_INSERTS = freeEachNbInserts;
 	}
 	
 	public void setUpdateAvailableListener(Top9UpdateAvailableListener listener) {
@@ -41,13 +47,9 @@ public class Forest implements Top3UpdateAvailableListener {
 		}
 	}
 	
-	public void updateTop3IfNeeded(TreeNode<DataRow> lastNode, int newScore) {	
-		
-	}
-	
 	public void updateAllScores(long lastestDiagnosedTs) {
 		for(Tree tree : trees) {
-			tree.updateFromAllLeaves(lastestDiagnosedTs);
+			tree.updateFromAllLeaves(lastestDiagnosedTs, top3);
 		}
 	}
 	
@@ -90,8 +92,8 @@ public class Forest implements Top3UpdateAvailableListener {
     	this.updateAllScores(insertedNode.getData().getDiagnosedTs());
     	
     	//Free empty trees
-    	if(INSERT_COUNT % FREE_EACH_INSERTS == 0) {
-        	freeEmptyTrees();
+    	if(INSERT_COUNT % FREE_EACH_NB_INSERTS == 0) {
+        	freeEmptyTrees(true);
     	}
     	++INSERT_COUNT;
 		
@@ -102,8 +104,17 @@ public class Forest implements Top3UpdateAvailableListener {
 		return country;
 	}
 
-	private void freeEmptyTrees() {
-		trees.removeIf((Tree tree) -> tree.areAllNodesZero());
+	private void freeEmptyTrees(boolean complete) {
+		
+		if(!complete) {
+			trees.removeIf((Tree tree) -> tree.areAllNodesZero());
+		} else {
+			for(Tree tree : trees) {
+				tree.removeDeadChains();
+			}
+		}
+		System.gc();
+
 	}
 	
 	private TreeNode<DataRow> insertNewTree(DataRow row) {

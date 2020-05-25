@@ -12,7 +12,20 @@ public class Top3 {
 	
 	public Top3() {
 		items = new TopItem[3];
-		this.clear();
+	}
+	
+	public Top3(Top3 other) {
+		items = new TopItem[3];
+		for(int i = 0; i < 3; ++i) {
+			items[i] = other.items[i];
+		}
+	}
+	
+	public Country getCountry() {
+		if(items[0] == null) {
+			return Country.NONE;
+		}
+		else return items[0].getCountry();
 	}
 	
 	public void clear() {
@@ -23,6 +36,10 @@ public class Top3 {
 	
 	public TopItem itemAt(int index) {
 		return items[index];
+	}
+	
+	public Integer minScore() {
+		return items[2] == null ? 0 : items[2].getScore();
 	}
 	
 	//Use country to skip checking for insertion/deletion mode

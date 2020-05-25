@@ -3,15 +3,19 @@ package Model;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Objects;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
+import Utils.Entry;
 
 import Interface.Top3UpdateAvailableListener;
 
 public class Tree {
 	
     private TreeNode<DataRow> root;
-    private HashSet<TreeNode<DataRow>> leaves;
+    private SortedMap<TreeNode<DataRow>, Integer> leaves; //with score now
     
     private Top3UpdateAvailableListener updateListener = null;
 
@@ -21,8 +25,10 @@ public class Tree {
         root.setChildren(new ArrayList<TreeNode<DataRow>>());
         root.setParent(null);
     
-        this.leaves = new HashSet<TreeNode<DataRow>>();
-        this.leaves.add(root);
+        this.leaves = new SortedMap<TreeNode<DataRow>, Integer>();
+
+        this.leaves.add(root, 10);
+
     }
     
     public void setUpdateAvailableListener(Top3UpdateAvailableListener listener) {
@@ -49,29 +55,61 @@ public class Tree {
     	parent.getChildren().add(node);
     	
     	//Update leaves
-    	this.leaves.remove(node.getParent());
-    	this.leaves.add(node);
+    	Integer oldLeafScore = this.leaves.remove(node.getParent());
+    	if(oldLeafScore == null) {
+    		oldLeafScore = 0;
+    		//Get brother 
+//    		ArrayList<TreeNode<DataRow>> brothers = node.getParent().getChildren();
+//    		TreeNode<DataRow> brother = brothers.get(brothers.size() - 2);
+//    		if(brother == null) {
+//    			int a = 0;
+//    		}
+//    		oldLeafScore = leaves.get(brother) == null ? 0 : leaves.get(brother);
+    		oldLeafScore = computeChainExactScore(node);
+    	}
+    	
+    	int score = node.getScore();
+    	this.leaves.add(node, oldLeafScore + score);
     	
     	return node;
     }
     
-    public boolean areAllNodesZero() {
-    	boolean res = true;
-    	Iterator<TreeNode<DataRow>> iter = leaves.iterator();
-    	while(iter.hasNext() && res == true) {
-    		res = res && iter.next().getScore() == 0;
-    	}
-    	return res;
+    public void removeDeadChains() {
+    	leaves.set().forEach((Entry<TreeNode<DataRow>, Integer> entry) -> {
+    		TreeNode<DataRow> leaf = entry.getKey();
+    		Integer value = entry.getValue();
+    		
+    		TreeNode<DataRow> currentNode = leaf.getParent();
+    		if(value.equals(0)) {
+    			while(currentNode.areAllChildrenZero() && currentNode != null) {
+    				currentNode.clear();
+    				currentNode = currentNode.getParent();
+    			}
+    		}
+    	});
     }
     
-    public void updateFromAllLeaves(long lastestDiagnosedTs) {
-    	for(TreeNode<DataRow> leaf : leaves) {
-    		int chainScore = updatePreviousScoresAndComputeTotalChainScore(leaf, lastestDiagnosedTs);
+    
+    public boolean areAllNodesZero() {
+    	return leaves.AreAllValuesZero();
+    }
+    
+    public void updateFromAllLeaves(long lastestDiagnosedTs, final Top3 currentTop3) {
+    		leaves.set().forEach( (Entry<TreeNode<DataRow>, Integer> entry) -> {
+    		TreeNode<DataRow> key = entry.getKey();
+    		Integer value = entry.getValue();
     		
-    		if(this.updateListener != null) {
-    			this.updateListener.updateAvailable(leaf, chainScore);
-    		}
-    	}
+    		//boolean thisNodeIsTheLastInserted = key.getData().getDiagnosedTs() == lastestDiagnosedTs;
+    		Integer maxPossibleChainScore = value ;//+ (thisNodeIsTheLastInserted ? 10 : 0);
+    		
+    		if(maxPossibleChainScore >= currentTop3.minScore()) {
+    			int chainScore = updatePreviousScoresAndComputeTotalChainScore(key, lastestDiagnosedTs);
+        		if(this.updateListener != null) {
+        			this.updateListener.updateAvailable(key, chainScore);
+        		}
+    		} 
+    		
+    	});
     }
     
     private int updatePreviousScoresAndComputeTotalChainScore(TreeNode<DataRow> currentNode, long lastestDiagnosedTs) {
@@ -87,8 +125,20 @@ public class Tree {
     	}
     }
     
+    private int computeChainExactScore(TreeNode<DataRow> leaf) {
+    	int totalScore = leaf.getScore();
+    	TreeNode<DataRow> currentNode = leaf.getParent();
+    	
+    	while(currentNode != null && currentNode.getScore() > 0) {
+    		totalScore += currentNode.getScore();
+    		currentNode = currentNode.getParent();
+    	}
+    	
+    	return totalScore;
+    }
+    
     public TreeNode<DataRow> searchForNode(int parentId) {
-		for(TreeNode<DataRow> leaf : leaves) {
+		for(TreeNode<DataRow> leaf : leaves.keySet()) {
 			if(leaf.getData().getId() == parentId) {
     			return leaf;
     		}
@@ -99,7 +149,7 @@ public class Tree {
     public void displayFromAllLeaves() {
     	int i = 0;
     	
-    	for(TreeNode<DataRow> leaf : leaves) {
+    	for(TreeNode<DataRow> leaf : leaves.keySet()) {
     		System.out.println("Chain n°" + (++i));
     		leaf.applyFunctionToAllNodesFromThisOne( 
     				(TreeNode<DataRow> node) -> {
