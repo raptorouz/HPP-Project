@@ -40,7 +40,7 @@ public class Utilities {
 	}
 	
 	public static int computeFreeEachInsert(int nbOfCasesInFile) {
-		return (int) Math.pow(0.4012 * nbOfCasesInFile, 0.7031);
+		return (int) (Math.pow(nbOfCasesInFile, 0.70) * Math.log(nbOfCasesInFile));
 	}
 
 }
