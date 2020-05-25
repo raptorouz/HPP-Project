@@ -11,8 +11,8 @@ public class Forest implements Top3UpdateAvailableListener {
 	private ArrayList<Tree> trees;
 	private Top3 top3;
 	
-	private static int INSERT_COUNT = 0;
-	private int FREE_EACH_NB_INSERTS = 4;
+	private static int INSERT_COUNT = 1;
+	private int FREE_EACH_NB_INSERTS = 20000;
 	
 	public enum Country {
 		FRANCE,
@@ -93,7 +93,7 @@ public class Forest implements Top3UpdateAvailableListener {
     	
     	//Free empty trees
     	if(INSERT_COUNT % FREE_EACH_NB_INSERTS == 0) {
-        	freeEmptyTrees();
+        	freeEmptyTrees(true);
     	}
     	++INSERT_COUNT;
 		
@@ -104,8 +104,17 @@ public class Forest implements Top3UpdateAvailableListener {
 		return country;
 	}
 
-	private void freeEmptyTrees() {
-		trees.removeIf((Tree tree) -> tree.areAllNodesZero());
+	private void freeEmptyTrees(boolean complete) {
+		
+		if(!complete) {
+			trees.removeIf((Tree tree) -> tree.areAllNodesZero());
+		} else {
+			for(Tree tree : trees) {
+				tree.removeDeadChains();
+			}
+		}
+		System.gc();
+
 	}
 	
 	private TreeNode<DataRow> insertNewTree(DataRow row) {
