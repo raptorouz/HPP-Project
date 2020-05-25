@@ -32,8 +32,7 @@ public class DeserializationThread implements Runnable {
 	    buffer = new BufferedWriter(writer); 
 	}
 	
-	public synchronized void writeInFile(Top3 item) {
-		
+	public void writeToFile() {
 	    try {
 			buffer.write(top9.toTop3().toString() + "\n");
 		    buffer.flush();		
@@ -50,7 +49,7 @@ public class DeserializationThread implements Runnable {
 			while((element = waitingQueue.poll()) != null)
 			{
 				top9.updatePartOfTop9(element);
-				writeInFile(element);
+				writeToFile();
 			}
 			
 			if(Thread.interrupted())

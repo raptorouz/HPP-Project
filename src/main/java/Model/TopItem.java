@@ -5,12 +5,12 @@ import java.util.Objects;
 import Model.Forest.Country;
 
 public class TopItem implements Comparable<TopItem>{
-	private int chainRootId;
-	private Country country;
-	private int score;
+	private final int chainRootId;
+	private final Country country;
+	private final int score;
 	
-	private int chainLeafId; //Used to check if the chain to be inserted is new or not
-	private long rootTs;
+	private final int chainLeafId; //Used to check if the chain to be inserted is new or not
+	private final long rootTs;
 
 	public TopItem(int chainRootId, Country country, int score, int chainLeafId, long rootTs) {
 		super();

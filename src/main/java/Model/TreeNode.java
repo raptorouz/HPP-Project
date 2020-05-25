@@ -1,6 +1,7 @@
 package Model;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Objects;
 
 public class TreeNode<T extends Object> {
@@ -25,6 +26,27 @@ public class TreeNode<T extends Object> {
 	public String toString() {
 		return data.toString() + " Score: " + this.score;
 	}
+    
+    public void clear() {
+    	for(TreeNode<T> child: children) {
+    		child.setParent(null);
+    	}
+    	this.children.clear();
+    }
+    
+    public boolean areAllChildrenZero() {
+    	if(children == null) {
+    		return true;
+    	}
+    	else {
+    		boolean allZero = true;
+    		Iterator<TreeNode<T>> iter = children.iterator();
+    		while(iter.hasNext() && allZero) {
+    			allZero = allZero && iter.next().score == 0;
+    		}
+    		return allZero;
+    	}
+    }
 
 	public TreeNode<T> getRootWithScoreNonNull() {
     	if(this.parent == null || this.parent.score == 0 ) {

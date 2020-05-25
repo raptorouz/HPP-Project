@@ -74,6 +74,22 @@ public class Tree {
     	return node;
     }
     
+    public void removeDeadChains() {
+    	leaves.set().forEach((Entry<TreeNode<DataRow>, Integer> entry) -> {
+    		TreeNode<DataRow> leaf = entry.getKey();
+    		Integer value = entry.getValue();
+    		
+    		TreeNode<DataRow> currentNode = leaf.getParent();
+    		if(value.equals(0)) {
+    			while(currentNode.areAllChildrenZero() && currentNode != null) {
+    				currentNode.clear();
+    				currentNode = currentNode.getParent();
+    			}
+    		}
+    	});
+    }
+    
+    
     public boolean areAllNodesZero() {
     	return leaves.AreAllValuesZero();
     }

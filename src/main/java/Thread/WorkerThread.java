@@ -62,6 +62,8 @@ public class WorkerThread implements Runnable, Top9UpdateAvailableListener {
 
 	@Override
 	public void updateAvailable(Top3 top3) {
-		this.top3Fifo.add(top3);
+		this.top3Fifo.add(new Top3(top3));
+//		this.top3Fifo.add(top3);
+
 	}
 }
